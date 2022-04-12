@@ -42,6 +42,7 @@ Generate a custom Culver's Flavor of the Day iCal feed.
     * Cached With Key `flavors`
     * Returns Array Of:
       * Name
+      * Description
       * Image URL
   * `/api/calendar?location={locationIDs}&flavor={flavors}`
     * Calls [https://www.culvers.com/fotd-add-to-calendar/{locationID}/{year}-{month}-{day}](https://www.culvers.com/fotd-add-to-calendar/{locationID}/{year}-{month}-{day})
