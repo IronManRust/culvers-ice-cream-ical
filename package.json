@@ -1,0 +1,30 @@
+{
+    "name": "culvers-ice-cream-ical",
+    "version": "1.0.0",
+    "description": "Generate a custom Culver's Flavor of the Day iCal feed.",
+    "keywords": [
+        "culver's",
+        "ice cream",
+        "flavor of the day",
+        "fod",
+        "ical"
+    ],
+    "license": "MIT",
+    "author": {
+        "name": "Shawn Headrick",
+        "email": "shawn_headrick@yahoo.com",
+        "url": "https://github.com/IronManRust"
+    },
+    "homepage": "https://github.com/IronManRust/culvers-ice-cream-ical",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/IronManRust/culvers-ice-cream-ical.git"
+    },
+    "bugs": {
+        "url": "https://github.com/IronManRust/culvers-ice-cream-ical/issues",
+        "email": "shawn_headrick@yahoo.com"
+    },
+    "scripts": {},
+    "dependencies": {},
+    "devDependencies": {}
+}
