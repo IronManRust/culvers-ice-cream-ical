@@ -7,7 +7,6 @@ Generate a custom Culver's Flavor of the Day iCal feed.
 ## TODO
 
 * Planned Libraries
-  * [https://www.npmjs.com/package/fastify](https://www.npmjs.com/package/fastify)
   * [https://www.npmjs.com/package/fastify-swagger](https://www.npmjs.com/package/fastify-swagger)
   * [https://www.npmjs.com/package/node-cache](https://www.npmjs.com/package/node-cache)
   * [https://www.npmjs.com/package/ical.js](https://www.npmjs.com/package/ical.js)
@@ -18,7 +17,7 @@ Generate a custom Culver's Flavor of the Day iCal feed.
     * Calls [https://www.culvers.com/api/locate/address/json?address={postal}](https://www.culvers.com/api/locate/address/json?address={postal})
     * Each Result Cached With Key `location:locationID`
     * Limited To 10 Results (Culver's API Constraint)
-    * Returns Array Of:
+    * Returns Array Of
       * ID
       * Name
       * URL
@@ -40,7 +39,7 @@ Generate a custom Culver's Flavor of the Day iCal feed.
   * `/api/flavors`
     * Calls [https://www.culvers.com/flavor-of-the-day](https://www.culvers.com/flavor-of-the-day)
     * Cached With Key `flavors`
-    * Returns Array Of:
+    * Returns Array Of
       * Name
       * Description
       * Image URL

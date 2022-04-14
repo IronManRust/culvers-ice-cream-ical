@@ -24,7 +24,31 @@
         "url": "https://github.com/IronManRust/culvers-ice-cream-ical/issues",
         "email": "shawn_headrick@yahoo.com"
     },
-    "scripts": {},
-    "dependencies": {},
-    "devDependencies": {}
+    "main": "dist/index.js",
+    "scripts": {
+        "clean": "rimraf dist",
+        "build": "npm run build:src",
+        "build:src": "tsc -p tsconfig.json",
+        "lint": "eslint . --ext .ts,.tsx",
+        "start": "node dist",
+        "all-the-things": "npm run clean && npm run build && npm run lint"
+    },
+    "devDependencies": {
+        "@types/node": "^17.0.24",
+        "@types/pino": "^7.0.5",
+        "@typescript-eslint/eslint-plugin": "^5.19.0",
+        "eslint": "^7.32.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-jsdoc": "^39.2.1",
+        "eslint-plugin-prefer-arrow": "^1.2.3",
+        "eslint-plugin-tsdoc": "^0.2.16",
+        "prettier": "^2.6.2",
+        "rimraf": "^3.0.2",
+        "typescript": "^4.6.3"
+    },
+    "dependencies": {
+        "fastify": "^3.28.0",
+        "pino": "^7.10.0",
+        "pino-pretty": "^7.6.1"
+    }
 }
