@@ -27,7 +27,8 @@
     "main": "dist/index.js",
     "scripts": {
         "clean": "rimraf dist",
-        "build": "npm run build:src",
+        "build": "npm run build:static && npm run build:src",
+        "build:static": "copyfiles -f static/*.* dist",
         "build:src": "tsc -p tsconfig.json",
         "lint": "eslint . --ext .ts,.tsx",
         "start": "node dist",
@@ -37,6 +38,7 @@
         "@types/node": "^17.0.24",
         "@types/pino": "^7.0.5",
         "@typescript-eslint/eslint-plugin": "^5.19.0",
+        "copyfiles": "^2.4.1",
         "eslint": "^7.32.0",
         "eslint-config-prettier": "^8.5.0",
         "eslint-plugin-jsdoc": "^39.2.1",
@@ -48,6 +50,8 @@
     },
     "dependencies": {
         "fastify": "^3.28.0",
+        "fastify-static": "^4.6.1",
+        "fastify-swagger": "^5.1.1",
         "pino": "^7.10.0",
         "pino-pretty": "^7.6.1"
     }

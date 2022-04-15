@@ -1,5 +1,6 @@
 import Fastify, { FastifyInstance } from 'fastify'
 import { getLogger } from './logger'
+import { setupDocumentation } from './plugins/documentation'
 import { ListenOptions } from './types/listenOptions'
 import { LoggerOptions } from './types/loggerOptions'
 
@@ -20,6 +21,8 @@ export default class Server {
     this.#fastifyInstance = Fastify({
       logger: getLogger(loggerOptions)
     })
+
+    setupDocumentation(this.#fastifyInstance)
   }
 
   /**

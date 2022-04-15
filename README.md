@@ -7,7 +7,6 @@ Generate a custom Culver's Flavor of the Day iCal feed.
 ## TODO
 
 * Planned Libraries
-  * [https://www.npmjs.com/package/fastify-swagger](https://www.npmjs.com/package/fastify-swagger)
   * [https://www.npmjs.com/package/node-cache](https://www.npmjs.com/package/node-cache)
   * [https://www.npmjs.com/package/ical.js](https://www.npmjs.com/package/ical.js)
   * [https://www.npmjs.com/package/@jacobmischka/ical-merger](https://www.npmjs.com/package/@jacobmischka/ical-merger)

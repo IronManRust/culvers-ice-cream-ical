@@ -25,12 +25,12 @@ export const getLogger = (loggerOptions: LoggerOptions): Logger => {
     },
     /**
      * Creates a message for logging.
-     * @param {FastifyReply} reply - The FastifyReply to format.
+     * @param {FastifyReply} response - The FastifyReply to format.
      * @returns {LogReply} - The formatted message.
      */
-    res: (reply: FastifyReply): LogReply => {
+    res: (response: FastifyReply): LogReply => {
       return {
-        statusCode: reply.statusCode
+        statusCode: response.statusCode
       }
     }
   }
