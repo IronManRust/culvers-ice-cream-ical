@@ -1,10 +1,7 @@
 import Fastify, { FastifyInstance } from 'fastify'
-import { getLogger, LoggerOptions } from './logger'
-
-export interface ListenOptions {
-  address: string
-  port: number
-}
+import { getLogger } from './logger'
+import { ListenOptions } from './types/listenOptions'
+import { LoggerOptions } from './types/loggerOptions'
 
 /**
  * The root object that handles processing requests and responses.

@@ -1,7 +1,8 @@
 import cluster from 'cluster'
 import os from 'os'
-import { LoggerOptions } from './logger'
-import Server, { displayServerBanner, ListenOptions } from './server'
+import Server, { displayServerBanner } from './server'
+import { ListenOptions } from './types/listenOptions'
+import { LoggerOptions } from './types/loggerOptions'
 
 /**
  * Encapsulates a server in cluster mode.

@@ -1,21 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import pino, { Logger } from 'pino'
-
-export interface LoggerOptions {
-  pretty: boolean
-  colorize: boolean
-  levelFirst: boolean
-}
-
-interface SerializedLogRequest {
-  method: string
-  hostname: string
-  url: string
-}
-
-interface SerializedLogReply {
-  statusCode: number
-}
+import { LoggerOptions } from './types/loggerOptions'
+import { LogReply } from './types/logReply'
+import { LogRequest } from './types/logRequest'
 
 /**
  * Gets a Logger instance with the specified options.
@@ -27,9 +14,9 @@ export const getLogger = (loggerOptions: LoggerOptions): Logger => {
     /**
      * Creates a message for logging.
      * @param {FastifyRequest} request - The FastifyRequest to format.
-     * @returns {SerializedLogRequest} - The formatted message.
+     * @returns {LogRequest} - The formatted message.
      */
-    req: (request: FastifyRequest): SerializedLogRequest => {
+    req: (request: FastifyRequest): LogRequest => {
       return {
         method: request.method,
         hostname: request.hostname,
@@ -39,9 +26,9 @@ export const getLogger = (loggerOptions: LoggerOptions): Logger => {
     /**
      * Creates a message for logging.
      * @param {FastifyReply} reply - The FastifyReply to format.
-     * @returns {SerializedLogReply} - The formatted message.
+     * @returns {LogReply} - The formatted message.
      */
-    res: (reply: FastifyReply): SerializedLogReply => {
+    res: (reply: FastifyReply): LogReply => {
       return {
         statusCode: reply.statusCode
       }
