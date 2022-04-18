@@ -7,12 +7,23 @@ Generate a custom Culver's Flavor of the Day iCal feed.
 ## TODO
 
 * Planned Libraries
+  * [https://www.npmjs.com/package/node-html-parser](https://www.npmjs.com/package/node-html-parser)
   * [https://www.npmjs.com/package/node-cache](https://www.npmjs.com/package/node-cache)
   * [https://www.npmjs.com/package/ical.js](https://www.npmjs.com/package/ical.js)
   * [https://www.npmjs.com/package/@jacobmischka/ical-merger](https://www.npmjs.com/package/@jacobmischka/ical-merger)
   * [https://www.npmjs.com/package/ics](https://www.npmjs.com/package/ics)
 * Hypermedia / HATEOAS
   * All resources will contain a `_links` collection as a base type.
+* Startup Caching
+  * Flavors
+    * Calls [https://www.culvers.com/flavor-of-the-day](https://www.culvers.com/flavor-of-the-day)
+    * Cached With Key `flavors`
+  * Locations
+    * Loops through location IDs from `1` through `1000`
+      * If that ID is in the cache, move on.
+      * If it is not in the cache, query [https://www.culvers.com/fotd.aspx?storeid={id}](https://www.culvers.com/fotd.aspx?storeid={id})
+        * If a 302 to `/flavor-of-the-day/` then the location is not valid, and `NULL` is cached.
+        * If a 301 to `/restaurants/{name-url}` make a `node-html-parser` query for `.postal-code` and use that value to do a postal code search (see below), and cache the 10 results.
 * Planned Endpoints
   * `/api/location?postal={postal}`
     * Calls [https://www.culvers.com/api/locate/address/json?address={postal}](https://www.culvers.com/api/locate/address/json?address={postal})
@@ -24,7 +35,6 @@ Generate a custom Culver's Flavor of the Day iCal feed.
       * Name, URL
       * URL
   * `/api/location/{locationID}`
-    * Calls [http://www.culvers.com/restaurants/{name-url}](http://www.culvers.com/restaurants/{name-url})
     * Cached With Key `location:locationID`
     * Returns
       * ID
@@ -47,14 +57,13 @@ Generate a custom Culver's Flavor of the Day iCal feed.
         * Saturday
         * Sunday
   * `/api/flavor`
-    * Calls [https://www.culvers.com/flavor-of-the-day](https://www.culvers.com/flavor-of-the-day)
     * Cached With Key `flavors`
     * Returns Array Of
       * Name, Display
       * Name, URL
       * Image URL
   * `/api/flavor/{name-url}`
-    * Invokes `/api/flavor` If Not In Cache
+    * Cached With Key `flavors`
     * Returns
       * Name, Display
       * Name, URL
