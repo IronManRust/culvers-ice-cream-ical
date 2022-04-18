@@ -25,7 +25,7 @@ Generate a custom Culver's Flavor of the Day iCal feed.
         * If a 302 to `/flavor-of-the-day/` then the location is not valid, and `NULL` is cached.
         * If a 301 to `/restaurants/{name-url}` make a `node-html-parser` query for `.postal-code` and use that value to do a postal code search (see below), and cache the 10 results.
 * Planned Endpoints
-  * `/api/location?postal={postal}`
+  * `GET /api/location?postal={postal}`
     * Calls [https://www.culvers.com/api/locate/address/json?address={postal}](https://www.culvers.com/api/locate/address/json?address={postal})
     * Each Result Cached With Key `location:locationID`
     * Limited To 10 Results (Culver's API Constraint)
@@ -34,7 +34,7 @@ Generate a custom Culver's Flavor of the Day iCal feed.
       * Name, Display
       * Name, URL
       * URL
-  * `/api/location/{locationID}`
+  * `GET /api/location/{locationID}`
     * Cached With Key `location:locationID`
     * Returns
       * ID
@@ -56,30 +56,36 @@ Generate a custom Culver's Flavor of the Day iCal feed.
         * Friday
         * Saturday
         * Sunday
-  * `/api/flavor`
+  * `GET /api/flavor`
     * Cached With Key `flavors`
     * Returns Array Of
       * Name, Display
       * Name, URL
       * Image URL
-  * `/api/flavor/{name-url}`
+  * `GET /api/flavor/{name-url}`
     * Cached With Key `flavors`
     * Returns
       * Name, Display
       * Name, URL
       * Image URL
       * Description
-  * `/api/calendar/ical?location={locationIDs}&flavor={flavors}`
+  * `GET /api/calendar/ical?location={locationIDs}&flavor={flavors}`
     * Calls [https://www.culvers.com/fotd-add-to-calendar/{locationID}/{year}-{month}-{day}](https://www.culvers.com/fotd-add-to-calendar/{locationID}/{year}-{month}-{day})
     * Processes Current And Next Month (Culver's Website Constraint)
     * Cached With Key `flavor:locationID:year-month-day`
     * Returns iCal Feed
       * Aggregates 1-to-Many LocationIDs
       * Filters On 0-to-Many Flavors (Omitted Implies No Filtering)
-  * `/api/calendar/json?location={locationIDs}&flavor={flavors}`
+  * `GET /api/calendar/json?location={locationIDs}&flavor={flavors}`
     * Calls [https://www.culvers.com/fotd-add-to-calendar/{locationID}/{year}-{month}-{day}](https://www.culvers.com/fotd-add-to-calendar/{locationID}/{year}-{month}-{day})
     * Processes Current And Next Month (Culver's Website Constraint)
     * Cached With Key `flavor:locationID:year-month-day`
     * Returns JSON Array
       * Aggregates 1-to-Many LocationIDs
       * Filters On 0-to-Many Flavors (Omitted Implies No Filtering)
+  * `GET /api/status`
+    * Performs A Health Check
+    * Includes Diagnostic Information
+      * Total Cached Locations
+      * Total Cached Flavors
+      * Total Cached Calendar Entries
