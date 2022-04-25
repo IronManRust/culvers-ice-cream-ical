@@ -1,6 +1,7 @@
 import Fastify, { FastifyInstance } from 'fastify'
 import { getLogger } from './logger'
 import { setupDocumentation } from './plugins/documentation'
+import { setupRouting } from './plugins/routing'
 import { ListenOptions } from './types/listenOptions'
 import { LoggerOptions } from './types/loggerOptions'
 
@@ -23,6 +24,7 @@ export default class Server {
     })
 
     setupDocumentation(this.#fastifyInstance)
+    setupRouting(this.#fastifyInstance)
   }
 
   /**
