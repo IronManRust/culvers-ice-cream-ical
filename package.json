@@ -27,8 +27,9 @@
     "main": "dist/index.js",
     "scripts": {
         "clean": "rimraf dist",
-        "build": "npm run build:static && npm run build:src",
+        "build": "npm run build:static && npm run build:metadata && npm run build:src",
         "build:static": "copyfiles -f static/*.* dist",
+        "build:metadata": "node package-metadata.js",
         "build:src": "tsc -p tsconfig.json",
         "lint": "eslint . --ext .ts,.tsx",
         "start": "node dist",

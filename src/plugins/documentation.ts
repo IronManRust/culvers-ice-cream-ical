@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyReply } from 'fastify'
 import FastifyStatic from 'fastify-static'
 import FastifySwagger from 'fastify-swagger'
 import fs from 'fs'
+import { RouteTag, getRouteTagDescription } from '../enums/routeTag'
 
 /**
  * Returns a static file with the specified status code and file name.
@@ -21,24 +22,43 @@ const sendStaticFile = (response: FastifyReply, statusCode: number, fileName: st
  * @param {FastifyInstance} fastifyInstance - The instance of the Fastify runtime to apply the documentation handlers to.
  */
 export const setupDocumentation = (fastifyInstance: FastifyInstance): void => {
-  // TODO: Read `package.json` Values
+  const metadata = JSON.parse(fs.readFileSync(`${__dirname}/../metadata.json`, {
+    encoding: 'utf8'
+  }))
   fastifyInstance.register(FastifySwagger, {
     swagger: {
       info: {
-        title: process.env.npm_package_name || '',
-        description: process.env.npm_package_description || '',
-        version: process.env.npm_package_version || '0.0.0',
+        title: metadata.name || '',
+        description: metadata.description || '',
+        version: metadata.version || '0.0.0',
         contact: {
-          name: process.env.npm_package_author_name || '',
-          email: process.env.npm_package_author_email || '',
-          url: process.env.npm_package_author_url || ''
+          name: metadata.contactName || '',
+          email: metadata.contactEmail || '',
+          url: metadata.contactURL || ''
         },
         license: {
-          name: process.env.npm_package_license || '',
-          url: `https://opensource.org/licenses/${process.env.npm_package_license || ''}`
+          name: metadata.license || '',
+          url: `https://opensource.org/licenses/${metadata.license || ''}`
         }
       },
-      tags: [/* TODO: { name: RouteTag.Value, description: getRouteTagDescription(RouteTag.Value) } */]
+      tags: [
+        {
+          name: RouteTag.Location,
+          description: getRouteTagDescription(RouteTag.Location)
+        },
+        {
+          name: RouteTag.Flavor,
+          description: getRouteTagDescription(RouteTag.Flavor)
+        },
+        {
+          name: RouteTag.Calendar,
+          description: getRouteTagDescription(RouteTag.Calendar)
+        },
+        {
+          name: RouteTag.Information,
+          description: getRouteTagDescription(RouteTag.Information)
+        }
+      ]
     },
     exposeRoute: true,
     routePrefix: '/swagger'
@@ -52,8 +72,12 @@ export const setupDocumentation = (fastifyInstance: FastifyInstance): void => {
     const spec20 = fastifyInstance.swagger()
     const spec30 = JSON.parse(JSON.stringify(spec20))
     spec30.openapi = '3.0'
-    fs.writeFileSync(`${__dirname}/../spec-2.0.json`, JSON.stringify(spec20))
-    fs.writeFileSync(`${__dirname}/../spec-3.0.json`, JSON.stringify(spec30))
+    fs.writeFileSync(`${__dirname}/../spec-2.0.json`, JSON.stringify(spec20), {
+      encoding: 'utf8'
+    })
+    fs.writeFileSync(`${__dirname}/../spec-3.0.json`, JSON.stringify(spec30), {
+      encoding: 'utf8'
+    })
   })
 
   const RouteIndex = {
