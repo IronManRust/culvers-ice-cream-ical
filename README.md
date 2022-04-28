@@ -13,7 +13,8 @@ Generate a custom Culver's Flavor of the Day iCal feed.
   * [https://www.npmjs.com/package/@jacobmischka/ical-merger](https://www.npmjs.com/package/@jacobmischka/ical-merger)
   * [https://www.npmjs.com/package/ics](https://www.npmjs.com/package/ics)
 * Hypermedia / HATEOAS
-  * All resources will contain a `_links` collection as a base type.
+  * All resources will contain a `links` collection as a base type.
+* Test Coverage Via Jest
 * Startup Caching
   * Flavors
     * Calls [https://www.culvers.com/flavor-of-the-day](https://www.culvers.com/flavor-of-the-day)

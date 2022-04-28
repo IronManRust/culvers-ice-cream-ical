@@ -3,6 +3,7 @@ import FastifyStatic from 'fastify-static'
 import FastifySwagger from 'fastify-swagger'
 import fs from 'fs'
 import { RouteTag, getRouteTagDescription } from '../enums/routeTag'
+import { RouteIndex } from '../routes/information'
 
 /**
  * Returns a static file with the specified status code and file name.
@@ -80,12 +81,6 @@ export const setupDocumentation = (fastifyInstance: FastifyInstance): void => {
     })
   })
 
-  const RouteIndex = {
-    path: '/',
-    options: {
-    },
-    successCode: 200
-  } // TODO: Move to `routes` folder and expand.
   fastifyInstance.get(RouteIndex.path, RouteIndex.options, (_request, response) => {
     sendStaticFile(response, RouteIndex.successCode, 'index.html')
   })
