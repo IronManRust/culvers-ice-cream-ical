@@ -1,8 +1,8 @@
 import { FastifyInstance } from 'fastify'
 import { StatusCodes, getReasonPhrase } from 'http-status-codes'
 import ToJsonSchema from 'to-json-schema'
-import { RouteVerb } from '../enums/routeVerb'
 import { generateJSONSchemaObject } from '../functions/route'
+import { links, metaData } from '../routes/common'
 import ErrorResponse from '../types/errorResponse'
 
 /**
@@ -50,17 +50,6 @@ export const getErrorHandlerSchemas = (): {
   HTTP404: ToJsonSchema.JSONSchema3or4,
   HTTP500: ToJsonSchema.JSONSchema3or4
 } => {
-  const metaData = [{
-    key: 'key',
-    value: 'value'
-  }]
-  const links = [{
-    title: 'title',
-    href: '#',
-    verb: RouteVerb.GET,
-    rel: 'relationship',
-    metaData
-  }]
   const errorResponse400: ErrorResponse = {
     statusCode: StatusCodes.BAD_REQUEST,
     statusName: getReasonPhrase(StatusCodes.BAD_REQUEST),

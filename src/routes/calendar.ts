@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ContentType } from '../enums/contentType'
 import { RouteTag } from '../enums/routeTag'
 import { RouteVerb } from '../enums/routeVerb'
-import { generateJSONSchemaObject, generateJSONSchemaParams } from '../functions/route'
+import { generateJSONSchemaObject } from '../functions/route'
 import { getErrorHandlerSchemas } from '../plugins/errorHandler'
 import Route from '../types/route'
 
@@ -22,8 +22,6 @@ export const RouteCalendarFeed: Route = {
       tags: [RouteTag.Calendar],
       consumes: [ContentType.JSON],
       produces: [ContentType.iCalendar],
-      params: generateJSONSchemaParams(routeCalendarFeedPath),
-      headers: undefined,
       response: {
         200: generateJSONSchemaObject(undefined, undefined, undefined), // TODO: Response Object
         400: errorHandlerSchemas.HTTP400,
@@ -48,8 +46,6 @@ export const RouteCalendarJSON: Route = {
       tags: [RouteTag.Calendar],
       consumes: [ContentType.JSON],
       produces: [ContentType.JSON],
-      params: generateJSONSchemaParams(routeCalendarJSONPath),
-      headers: undefined,
       response: {
         200: generateJSONSchemaObject(undefined, undefined, undefined), // TODO: Response Object
         400: errorHandlerSchemas.HTTP400,

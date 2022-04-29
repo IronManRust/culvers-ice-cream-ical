@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import { ContentType } from '../enums/contentType'
 import { RouteTag } from '../enums/routeTag'
 import { RouteVerb } from '../enums/routeVerb'
-import { generateJSONSchemaObject, generateJSONSchemaParams } from '../functions/route'
+import { generateJSONSchemaObject } from '../functions/route'
 import { getErrorHandlerSchemas } from '../plugins/errorHandler'
 import Route from '../types/route'
 
@@ -22,8 +22,6 @@ export const RouteIndex: Route = {
       tags: [RouteTag.Information],
       consumes: [ContentType.JSON],
       produces: [ContentType.HTML],
-      params: generateJSONSchemaParams(routeIndexPath),
-      headers: undefined,
       response: {
         200: generateJSONSchemaObject(undefined, undefined, undefined), // TODO: Response Object
         400: errorHandlerSchemas.HTTP400,
@@ -48,8 +46,6 @@ export const RouteStatus: Route = {
       tags: [RouteTag.Information],
       consumes: [ContentType.JSON],
       produces: [ContentType.JSON],
-      params: generateJSONSchemaParams(routeStatusPath),
-      headers: undefined,
       response: {
         200: generateJSONSchemaObject(undefined, undefined, undefined), // TODO: Response Object
         400: errorHandlerSchemas.HTTP400,
