@@ -1,7 +1,7 @@
 import Cluster from './cluster'
 import { getLogger } from './logger'
-import { ListenOptions } from './types/listenOptions'
-import { LoggerOptions } from './types/loggerOptions'
+import ListenOptions from './types/listenOptions'
+import LoggerOptions from './types/loggerOptions'
 
 // TODO: Inject options at runtime, either from a config file or from command line arguments.
 

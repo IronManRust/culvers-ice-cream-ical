@@ -1,3 +1,3 @@
-export interface LogReply {
+export default interface LogReply {
   statusCode: number
 }

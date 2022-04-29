@@ -3,8 +3,8 @@ import { getLogger } from './logger'
 import { setupDocumentation } from './plugins/documentation'
 import { setupErrorHandler } from './plugins/errorHandler'
 import { setupRouting } from './plugins/routing'
-import { ListenOptions } from './types/listenOptions'
-import { LoggerOptions } from './types/loggerOptions'
+import ListenOptions from './types/listenOptions'
+import LoggerOptions from './types/loggerOptions'
 
 /**
  * The root object that handles processing requests and responses.

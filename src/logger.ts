@@ -1,8 +1,8 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import pino, { Logger } from 'pino'
-import { LoggerOptions } from './types/loggerOptions'
-import { LogReply } from './types/logReply'
-import { LogRequest } from './types/logRequest'
+import LoggerOptions from './types/loggerOptions'
+import LogReply from './types/logReply'
+import LogRequest from './types/logRequest'
 
 /**
  * Gets a Logger instance with the specified options.
