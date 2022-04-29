@@ -21,6 +21,11 @@ export default class Server {
    */
   public constructor(loggerOptions: LoggerOptions) {
     this.#fastifyInstance = Fastify({
+      ajv: {
+        customOptions: {
+          coerceTypes: 'array'
+        }
+      },
       logger: getLogger(loggerOptions)
     })
 
