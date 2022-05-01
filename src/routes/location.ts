@@ -70,7 +70,7 @@ const locationDetail: LocationDetail = {
     postal: 90210,
     country: 'US'
   },
-  hours: {
+  schedule: {
     monday: {
       open: '9:00 AM',
       close: '9:00 PM'
