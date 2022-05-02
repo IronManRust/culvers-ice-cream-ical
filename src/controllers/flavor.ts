@@ -1,5 +1,7 @@
 import { FastifyInstance } from 'fastify'
+import { getFlavorList, getFlavor } from '../managers/flavorManager'
 import { RouteFlavorList, RouteFlavorGet } from '../routes/flavor'
+import FlavorParams from '../types/flavorParams'
 
 /**
  * Registers the controller.
@@ -7,15 +9,20 @@ import { RouteFlavorList, RouteFlavorGet } from '../routes/flavor'
  */
 export const registerFlavorController = (fastifyInstance: FastifyInstance): void => {
   fastifyInstance.get(RouteFlavorList.path, RouteFlavorList.options, (_request, response) => {
-    // TODO: Make Async / Perform Operation / Add Hypermedia / Add Expiration Header
+    const value = getFlavorList()
+    // TODO: Add Hypermedia
     response
       .code(RouteFlavorList.successCode)
-      .send(undefined) // TODO: Return Response Body
+      // TODO: Add Expiration Header
+      .send(value)
   })
-  fastifyInstance.get(RouteFlavorGet.path, RouteFlavorGet.options, (_request, response) => {
-    // TODO: Make Async / Perform Operation / Add Hypermedia / Add Expiration Header
+  fastifyInstance.get(RouteFlavorGet.path, RouteFlavorGet.options, (request, response) => {
+    const params = request.params as FlavorParams
+    const value = getFlavor(params)
+    // TODO: Add Hypermedia
     response
       .code(RouteFlavorGet.successCode)
-      .send(undefined) // TODO: Return Response Body
+      // TODO: Add Expiration Header
+      .send(value)
   })
 }

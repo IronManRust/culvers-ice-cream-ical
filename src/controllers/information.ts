@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify'
+import { getStatus } from '../managers/informationManager'
 import { RouteStatus } from '../routes/information'
 
 /**
@@ -7,9 +8,11 @@ import { RouteStatus } from '../routes/information'
  */
 export const registerInformationController = (fastifyInstance: FastifyInstance): void => {
   fastifyInstance.get(RouteStatus.path, RouteStatus.options, (_request, response) => {
-    // TODO: Make Async / Perform Operation / Add Hypermedia / Add Expiration Header
+    const value = getStatus()
+    // TODO: Add Hypermedia
     response
       .code(RouteStatus.successCode)
-      .send(undefined) // TODO: Return Response Body
+      // TODO: Add Expiration Header
+      .send(value)
   })
 }

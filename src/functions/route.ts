@@ -15,9 +15,6 @@ export const generateJSONSchemaObject = (value: unknown, title: string | undefin
     arrays: {
       mode: 'uniform'
     },
-    objects: {
-      additionalProperties: false
-    },
     required: false,
     strings: {
       detectFormat: true

@@ -4,8 +4,8 @@ import LocationDetail from './locationDetail'
 
 export default interface CalendarItem extends BaseResponse {
   date: {
-    start: Date
-    end: Date
+    start: string
+    end: string
   }
   flavor: FlavorDetail,
   location: LocationDetail

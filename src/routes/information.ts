@@ -55,7 +55,7 @@ export const RouteStatus: Route = {
       consumes: [ContentType.JSON],
       produces: [ContentType.JSON],
       response: {
-        200: generateJSONSchemaObject(status, 'API Status', 'Gets the API status.'),
+        200: generateJSONSchemaObject(status, 'API Status', 'The API status.'),
         400: errorHandlerSchemas.HTTP400,
         404: errorHandlerSchemas.HTTP404,
         500: errorHandlerSchemas.HTTP500
