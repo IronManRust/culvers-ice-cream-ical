@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify'
+import { HTTPHeader } from '../constants/httpHeader'
 import { getFlavorList, getFlavor } from '../managers/flavorManager'
 import { RouteFlavorList, RouteFlavorGet } from '../routes/flavor'
 import FlavorParams from '../types/flavorParams'
@@ -13,8 +14,8 @@ export const registerFlavorController = (fastifyInstance: FastifyInstance): void
     // TODO: Add Hypermedia
     response
       .code(RouteFlavorList.successCode)
-      // TODO: Add Expiration Header
-      .send(value)
+      .header(HTTPHeader.Expires, value.expires.toUTCString())
+      .send(value.data)
   })
   fastifyInstance.get(RouteFlavorGet.path, RouteFlavorGet.options, async (request, response) => {
     const params = request.params as FlavorParams
@@ -22,7 +23,7 @@ export const registerFlavorController = (fastifyInstance: FastifyInstance): void
     // TODO: Add Hypermedia
     response
       .code(RouteFlavorGet.successCode)
-      // TODO: Add Expiration Header
-      .send(value)
+      .header(HTTPHeader.Expires, value.expires.toUTCString())
+      .send(value.data)
   })
 }

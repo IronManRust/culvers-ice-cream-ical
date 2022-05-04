@@ -2,10 +2,33 @@ import axios from 'axios'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import { parse } from 'node-html-parser'
+import CachedAsset from '../types/cachedAsset'
 import FlavorDetail from '../types/flavorDetail'
 import FlavorListDetail from '../types/flavorListDetail'
 import FlavorListSummary from '../types/flavorListSummary'
 import FlavorParams from '../types/flavorParams'
+
+/**
+ * Gets a list of flavors by reading from the cache.
+ * @returns {CachedAsset<FlavorListDetail> | undefined} - A list of all available flavors.
+ */
+const getFlavorListCache = (): Promise<CachedAsset<FlavorListDetail> | undefined> => {
+  console.log('Reading From Cache') // TODO: Read From Cache
+  return Promise.resolve(undefined)
+}
+
+/**
+ * Writes a list of flavors to the cache.
+ * @param {FlavorListDetail} flavorListDetail - A list of all available flavors.
+ * @returns {CachedAsset<FlavorListDetail>} - A list of all available flavors.
+ */
+const setFlavorListCache = (flavorListDetail: FlavorListDetail): Promise<CachedAsset<FlavorListDetail>> => {
+  console.log('Writing To Cache') // TODO: Write To Cache
+  return Promise.resolve({
+    data: flavorListDetail,
+    expires: new Date('2020-01-01T00:00:00.000+00:00')
+  })
+}
 
 /**
  * Gets a list of flavors by scraping the Culver's website.
@@ -39,40 +62,44 @@ const getFlavorListScrape = async (): Promise<FlavorListDetail> => {
 
 /**
  * Gets a list of flavors.
- * @returns {FlavorListSummary} - A list of all available flavors.
+ * @returns {CachedAsset<FlavorListSummary>} - A list of all available flavors.
  */
-export const getFlavorList = async (): Promise<FlavorListSummary> => {
-  // TODO: Read From Cache
-  const flavorList = await getFlavorListScrape()
+export const getFlavorList = async (): Promise<CachedAsset<FlavorListSummary>> => {
+  const flavorList = await getFlavorListCache() ?? await setFlavorListCache(await getFlavorListScrape())
 
   return {
-    items: flavorList.items.map((x) => {
-      return {
-        key: x.key,
-        name: x.name
-      }
-    })
+    data: {
+      items: flavorList.data.items.map((x) => {
+        return {
+          key: x.key,
+          name: x.name
+        }
+      })
+    },
+    expires: flavorList.expires
   }
 }
 
 /**
  * Gets a flavor.
  * @param {FlavorParams} flavorParams - The specified flavor.
- * @returns {FlavorDetail} - Information about the specified flavor.
+ * @returns {CachedAsset<FlavorDetail>} - Information about the specified flavor.
  */
-export const getFlavor = async (flavorParams: FlavorParams): Promise<FlavorDetail> => {
+export const getFlavor = async (flavorParams: FlavorParams): Promise<CachedAsset<FlavorDetail>> => {
   if (!flavorParams.key) {
     throw new httpErrors.BadRequest('No flavor key specified.')
   }
 
-  // TODO: Read From Cache
-  const flavorList = await getFlavorListScrape()
+  const flavorList = await getFlavorListCache() ?? await setFlavorListCache(await getFlavorListScrape())
 
-  const matchingFlavors = flavorList.items.filter((x) => {
+  const matchingFlavors = flavorList.data.items.filter((x) => {
     return x.key.trim().toLowerCase() === flavorParams.key.trim().toLowerCase()
   })
   if (matchingFlavors.length === 1) {
-    return matchingFlavors[0]
+    return {
+      data: matchingFlavors[0],
+      expires: flavorList.expires
+    }
   } else {
     throw new httpErrors.NotFound('No matching flavor found.')
   }
