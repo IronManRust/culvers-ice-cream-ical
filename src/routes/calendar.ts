@@ -62,6 +62,7 @@ const calendarJSON: Calendar = {
       flavor: {
         key: 'flavor-1',
         name: 'Flavor #1',
+        flavorURL: '#',
         imageURL: '#',
         description: 'This is a description of Flavor #1.',
         links
@@ -91,6 +92,7 @@ const calendarJSON: Calendar = {
       flavor: {
         key: 'flavor-2',
         name: 'Flavor #2',
+        flavorURL: '#',
         imageURL: '#',
         description: 'This is a description of Flavor #2.',
         links

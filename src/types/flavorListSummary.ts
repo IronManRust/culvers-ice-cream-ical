@@ -1,6 +1,6 @@
 import BaseResponse from './baseResponse'
 import FlavorSummary from './flavorSummary'
 
-export default interface FlavorList extends BaseResponse {
+export default interface FlavorListSummary extends BaseResponse {
   items: FlavorSummary[]
 }

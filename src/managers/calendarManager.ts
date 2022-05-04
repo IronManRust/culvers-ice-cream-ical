@@ -41,6 +41,7 @@ export const getCalendarJSON = (calendarQuery: CalendarQuery): Calendar => {
         flavor: {
           key: 'flavor-1',
           name: 'Flavor #1',
+          flavorURL: '#',
           imageURL: '#',
           description: 'This is a description of Flavor #1.'
         },

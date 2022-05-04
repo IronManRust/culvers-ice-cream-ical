@@ -8,17 +8,17 @@ import FlavorParams from '../types/flavorParams'
  * @param {FastifyInstance} fastifyInstance - The instance of the Fastify runtime to apply the routing to.
  */
 export const registerFlavorController = (fastifyInstance: FastifyInstance): void => {
-  fastifyInstance.get(RouteFlavorList.path, RouteFlavorList.options, (_request, response) => {
-    const value = getFlavorList()
+  fastifyInstance.get(RouteFlavorList.path, RouteFlavorList.options, async (_request, response) => {
+    const value = await getFlavorList()
     // TODO: Add Hypermedia
     response
       .code(RouteFlavorList.successCode)
       // TODO: Add Expiration Header
       .send(value)
   })
-  fastifyInstance.get(RouteFlavorGet.path, RouteFlavorGet.options, (request, response) => {
+  fastifyInstance.get(RouteFlavorGet.path, RouteFlavorGet.options, async (request, response) => {
     const params = request.params as FlavorParams
-    const value = getFlavor(params)
+    const value = await getFlavor(params)
     // TODO: Add Hypermedia
     response
       .code(RouteFlavorGet.successCode)

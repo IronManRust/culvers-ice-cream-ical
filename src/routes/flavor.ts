@@ -6,23 +6,21 @@ import { RouteVerb } from '../enums/routeVerb'
 import { generateJSONSchemaObject, generateJSONSchemaParams } from '../functions/route'
 import { getErrorHandlerSchemas } from '../plugins/errorHandler'
 import FlavorDetail from '../types/flavorDetail'
-import FlavorList from '../types/flavorList'
+import FlavorListSummary from '../types/flavorListSummary'
 import Route from '../types/route'
 
 const errorHandlerSchemas = getErrorHandlerSchemas()
 
-const flavorList: FlavorList = {
+const flavorListSummary: FlavorListSummary = {
   items: [
     {
       key: 'flavor-1',
       name: 'Flavor #1',
-      imageURL: '#',
       links
     },
     {
       key: 'flavor-2',
       name: 'Flavor #2',
-      imageURL: '#',
       links
     }
   ],
@@ -43,7 +41,7 @@ export const RouteFlavorList: Route = {
       consumes: [ContentType.JSON],
       produces: [ContentType.JSON],
       response: {
-        200: generateJSONSchemaObject(flavorList, 'Flavor List', 'A list of all available flavors.'),
+        200: generateJSONSchemaObject(flavorListSummary, 'Flavor List', 'A list of all available flavors.'),
         400: errorHandlerSchemas.HTTP400,
         404: errorHandlerSchemas.HTTP404,
         500: errorHandlerSchemas.HTTP500
@@ -55,6 +53,7 @@ export const RouteFlavorList: Route = {
 const flavorDetail: FlavorDetail = {
   key: 'flavor-1',
   name: 'Flavor #1',
+  flavorURL: '#',
   imageURL: '#',
   description: 'This is a description of Flavor #1.',
   links
