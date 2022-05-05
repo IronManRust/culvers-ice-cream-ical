@@ -78,6 +78,8 @@ export class Cache {
     }
   }
 
+  // TODO: Return cache information to be used on the status call.
+
 }
 
 declare module 'fastify' {
