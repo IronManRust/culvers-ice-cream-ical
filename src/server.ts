@@ -1,8 +1,10 @@
 import Fastify, { FastifyInstance } from 'fastify'
 import { getLogger } from './logger'
+import { setupCaching } from './plugins/caching'
 import { setupDocumentation } from './plugins/documentation'
 import { setupErrorHandler } from './plugins/errorHandler'
 import { setupRouting } from './plugins/routing'
+import CacheOptions from './types/cacheOptions'
 import ListenOptions from './types/listenOptions'
 import LoggerOptions from './types/loggerOptions'
 
@@ -17,9 +19,10 @@ export default class Server {
   /**
    * Creates an instance of the Server class.
    * @param {LoggerOptions} loggerOptions - The specified logging options.
+   * @param {CacheOptions} cacheOptions - The specified caching options.
    * @memberof Server
    */
-  public constructor(loggerOptions: LoggerOptions) {
+  public constructor(loggerOptions: LoggerOptions, cacheOptions: CacheOptions) {
     this.#fastifyInstance = Fastify({
       ajv: {
         customOptions: {
@@ -29,6 +32,7 @@ export default class Server {
       logger: getLogger(loggerOptions)
     })
 
+    setupCaching(this.#fastifyInstance, cacheOptions)
     setupDocumentation(this.#fastifyInstance)
     setupErrorHandler(this.#fastifyInstance)
     setupRouting(this.#fastifyInstance)

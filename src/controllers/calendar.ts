@@ -1,7 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { getCalendarFeed, getCalendarJSON } from '../managers/calendarManager'
 import { RouteCalendarFeed, RouteCalendarJSON } from '../routes/calendar'
-import CalendarQuery from '../types/calendarQuery'
 
 /**
  * Registers the controller.
@@ -9,8 +8,7 @@ import CalendarQuery from '../types/calendarQuery'
  */
 export const registerCalendarController = (fastifyInstance: FastifyInstance): void => {
   fastifyInstance.get(RouteCalendarFeed.path, RouteCalendarFeed.options, (request, response) => {
-    const query = request.query as CalendarQuery
-    const value = getCalendarFeed(query)
+    const value = getCalendarFeed(request)
     // TODO: Add Hypermedia
     response
       .code(RouteCalendarFeed.successCode)
@@ -18,8 +16,7 @@ export const registerCalendarController = (fastifyInstance: FastifyInstance): vo
       .send(value)
   })
   fastifyInstance.get(RouteCalendarJSON.path, RouteCalendarJSON.options, (request, response) => {
-    const query = request.query as CalendarQuery
-    const value = getCalendarJSON(query)
+    const value = getCalendarJSON(request)
     // TODO: Add Hypermedia
     response
       .code(RouteCalendarJSON.successCode)

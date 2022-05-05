@@ -7,8 +7,6 @@ Generate a custom Culver's Flavor of the Day iCal feed.
 ## TODO
 
 * Planned Libraries
-  * [https://www.npmjs.com/package/node-html-parser](https://www.npmjs.com/package/node-html-parser)
-  * [https://www.npmjs.com/package/node-cache](https://www.npmjs.com/package/node-cache)
   * [https://www.npmjs.com/package/ical.js](https://www.npmjs.com/package/ical.js)
   * [https://www.npmjs.com/package/@jacobmischka/ical-merger](https://www.npmjs.com/package/@jacobmischka/ical-merger)
   * [https://www.npmjs.com/package/ics](https://www.npmjs.com/package/ics)
@@ -16,9 +14,6 @@ Generate a custom Culver's Flavor of the Day iCal feed.
   * All resources will contain a `links` collection as a base type.
 * Test Coverage Via Jest
 * Startup Caching
-  * Flavors
-    * Calls [https://www.culvers.com/flavor-of-the-day](https://www.culvers.com/flavor-of-the-day)
-    * Cached With Key `flavors`
   * Locations
     * Loops through location IDs from `1` through `1000`
       * If that ID is in the cache, move on.
@@ -57,19 +52,6 @@ Generate a custom Culver's Flavor of the Day iCal feed.
         * Friday
         * Saturday
         * Sunday
-  * `GET /api/flavor`
-    * Cached With Key `flavors`
-    * Returns Array Of
-      * Name, Display
-      * Name, URL
-      * Image URL
-  * `GET /api/flavor/{name-url}`
-    * Cached With Key `flavors`
-    * Returns
-      * Name, Display
-      * Name, URL
-      * Image URL
-      * Description
   * `GET /api/calendar/ical?location={locationIDs}&flavor={flavors}`
     * Calls [https://www.culvers.com/fotd-add-to-calendar/{locationID}/{year}-{month}-{day}](https://www.culvers.com/fotd-add-to-calendar/{locationID}/{year}-{month}-{day})
     * Processes Current And Next Month (Culver's Website Constraint)

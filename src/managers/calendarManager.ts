@@ -1,13 +1,15 @@
+import { FastifyRequest } from 'fastify'
 import Calendar from '../types/calendar'
 import CalendarQuery from '../types/calendarQuery'
 
 /**
  * Gets a calendar.
- * @param {CalendarQuery} calendarQuery - A list of query terms used to generate a calendar.
+ * @param {FastifyRequest} request - The request instance.
  * @returns {string} - A Flavor of the Day calendar in iCal format.
  */
-export const getCalendarFeed = (calendarQuery: CalendarQuery): string => {
+export const getCalendarFeed = (request: FastifyRequest): string => {
   // TODO: Stub Operation
+  const calendarQuery = request.query as CalendarQuery
   console.log(`getCalendarFeed(${JSON.stringify(calendarQuery)})`)
   return String`
     BEGIN:VCALENDAR
@@ -25,11 +27,12 @@ export const getCalendarFeed = (calendarQuery: CalendarQuery): string => {
 
 /**
  * Gets a calendar.
- * @param {CalendarQuery} calendarQuery - A list of query terms used to generate a calendar.
+ * @param {FastifyRequest} request - The request instance.
  * @returns {Calendar} - A Flavor of the Day calendar in JSON format.
  */
-export const getCalendarJSON = (calendarQuery: CalendarQuery): Calendar => {
+export const getCalendarJSON = (request: FastifyRequest): Calendar => {
   // TODO: Stub Operation
+  const calendarQuery = request.query as CalendarQuery
   console.log(`getCalendarJSON(${JSON.stringify(calendarQuery)})`)
   return {
     items: [
