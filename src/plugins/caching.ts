@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyLoggerInstance } from 'fastify'
 import NodeCache from 'node-cache'
 import CachedAsset from '../types/cachedAsset'
 import CacheOptions from '../types/cacheOptions'
+import CacheStatistics from '../types/cacheStatistics'
 
 /**
  * A templated NodeCache wrapper.
@@ -78,7 +79,25 @@ export class Cache {
     }
   }
 
-  // TODO: Return cache information to be used on the status call.
+  /**
+   * Gets statistics about the cache.
+   * @param {string[]} prefixes - A list of cache key prefixes.
+   * @returns {CacheStatistics} - Statistics about the cache.
+   * @memberof Cache
+   */
+  public getStatistics(prefixes: string[]): CacheStatistics {
+    const cacheStatistics: CacheStatistics = {
+      items: []
+    }
+    const keys = this.#nodeCache.keys().map((x) => { return x.trim().toLowerCase() })
+    for (const prefix of prefixes.map((x) => { return x.trim().toLowerCase() })) {
+      cacheStatistics.items.push({
+        prefix,
+        count: keys.filter((x) => { return x.startsWith(prefix) }).length
+      })
+    }
+    return cacheStatistics
+  }
 
 }
 

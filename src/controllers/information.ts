@@ -14,8 +14,8 @@ export const registerInformationController = (fastifyInstance: FastifyInstance):
       .code(RouteRoot.successCode)
       .send(value)
   })
-  fastifyInstance.get(RouteStatus.path, RouteStatus.options, (_request, response) => {
-    const value = getStatus()
+  fastifyInstance.get(RouteStatus.path, RouteStatus.options, (request, response) => {
+    const value = getStatus(request)
     // TODO: Add Hypermedia
     response
       .code(RouteStatus.successCode)

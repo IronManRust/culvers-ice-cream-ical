@@ -3,6 +3,7 @@ import { FastifyLoggerInstance, FastifyRequest } from 'fastify'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import { parse } from 'node-html-parser'
+import { getCacheKeyFlavors } from '../functions/cacheKeys'
 import { Cache } from '../plugins/caching'
 import CachedAsset from '../types/cachedAsset'
 import FlavorDetail from '../types/flavorDetail'
@@ -16,7 +17,7 @@ import FlavorParams from '../types/flavorParams'
  * @returns {CachedAsset<FlavorListDetail> | undefined} - A list of all available flavors.
  */
 const getFlavorListCache = (cache: Cache): CachedAsset<FlavorListDetail> | undefined => {
-  return cache.read<FlavorListDetail>('flavors')
+  return cache.read<FlavorListDetail>(getCacheKeyFlavors())
 }
 
 /**
@@ -26,7 +27,7 @@ const getFlavorListCache = (cache: Cache): CachedAsset<FlavorListDetail> | undef
  * @returns {CachedAsset<FlavorListDetail>} - A list of all available flavors.
  */
 const setFlavorListCache = (cache: Cache, flavorListDetail: FlavorListDetail): CachedAsset<FlavorListDetail> => {
-  return cache.write<FlavorListDetail>('flavors', flavorListDetail)
+  return cache.write<FlavorListDetail>(getCacheKeyFlavors(), flavorListDetail)
 }
 
 /**

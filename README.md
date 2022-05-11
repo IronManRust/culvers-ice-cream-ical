@@ -66,9 +66,3 @@ Generate a custom Culver's Flavor of the Day iCal feed.
     * Returns JSON Array
       * Aggregates 1-to-Many LocationIDs
       * Filters On 0-to-Many Flavors (Omitted Implies No Filtering)
-  * `GET /api/status`
-    * Performs A Health Check
-    * Includes Diagnostic Information
-      * Total Cached Locations
-      * Total Cached Flavors
-      * Total Cached Calendar Entries

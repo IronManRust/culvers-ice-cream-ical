@@ -66,6 +66,18 @@ export const RouteRoot: Route = {
 
 const status: Status = {
   health: HealthStatus.Healthy,
+  cacheStatistics: {
+    items: [
+      {
+        prefix: 'prefix1',
+        count: 1
+      },
+      {
+        prefix: 'prefix2',
+        count: 2
+      }
+    ]
+  },
   links
 }
 const routeStatusPath = '/api/status'
