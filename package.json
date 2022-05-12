@@ -62,6 +62,7 @@
         "node-html-parser": "^5.3.3",
         "pino": "^7.10.0",
         "pino-pretty": "^7.6.1",
+        "postal-codes-js": "^2.5.2",
         "to-json-schema": "^0.2.5"
     }
 }

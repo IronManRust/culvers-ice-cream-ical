@@ -13,7 +13,7 @@ import Route from '../types/route'
 const errorHandlerSchemas = getErrorHandlerSchemas()
 
 const locationListQuery: LocationListQuery = {
-  postal: 90210
+  postal: '90210'
 }
 const locationList: LocationList = {
   items: [

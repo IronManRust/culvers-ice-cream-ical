@@ -1,5 +1,5 @@
 import { FastifyInstance } from 'fastify'
-import { searchLocation, getLocation } from '../managers/locationManager'
+import { searchLocationList, getLocation } from '../managers/locationManager'
 import { RouteLocationSearch, RouteLocationGet } from '../routes/location'
 
 /**
@@ -7,12 +7,11 @@ import { RouteLocationSearch, RouteLocationGet } from '../routes/location'
  * @param {FastifyInstance} fastifyInstance - The instance of the Fastify runtime to apply the routing to.
  */
 export const registerLocationController = (fastifyInstance: FastifyInstance): void => {
-  fastifyInstance.get(RouteLocationSearch.path, RouteLocationSearch.options, (request, response) => {
-    const value = searchLocation(request)
+  fastifyInstance.get(RouteLocationSearch.path, RouteLocationSearch.options, async (request, response) => {
+    const value = await searchLocationList(request)
     // TODO: Add Hypermedia
     response
       .code(RouteLocationSearch.successCode)
-      // TODO: Add Expiration Header
       .send(value)
   })
   fastifyInstance.get(RouteLocationGet.path, RouteLocationGet.options, (request, response) => {

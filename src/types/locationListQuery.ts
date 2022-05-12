@@ -1,3 +1,3 @@
 export default interface LocationListQuery {
-  postal: number
+  postal: string
 }

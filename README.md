@@ -21,15 +21,6 @@ Generate a custom Culver's Flavor of the Day iCal feed.
         * If a 302 to `/flavor-of-the-day/` then the location is not valid, and `NULL` is cached.
         * If a 301 to `/restaurants/{name-url}` make a `node-html-parser` query for `.postal-code` and use that value to do a postal code search (see below), and cache the 10 results.
 * Planned Endpoints
-  * `GET /api/location?postal={postal}`
-    * Calls [https://www.culvers.com/api/locate/address/json?address={postal}](https://www.culvers.com/api/locate/address/json?address={postal})
-    * Each Result Cached With Key `location:locationID`
-    * Limited To 10 Results (Culver's API Constraint)
-    * Returns Array Of
-      * ID
-      * Name, Display
-      * Name, URL
-      * URL
   * `GET /api/location/{locationID}`
     * Cached With Key `location:locationID`
     * Returns
