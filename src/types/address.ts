@@ -1,6 +1,5 @@
 export default interface Address {
-  address1: string
-  address2: string
+  street: string
   city: string
   state: string
   postal: number

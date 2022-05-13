@@ -63,8 +63,7 @@ const locationDetail: LocationDetail = {
   name: 'Location #1',
   url: '#',
   address: {
-    address1: '123 Fake Street',
-    address2: 'Suite 100',
+    street: '123 Fake Street',
     city: 'Beverly Hills',
     state: 'CA',
     postal: 90210,
@@ -116,7 +115,10 @@ export const RouteLocationGet: Route = {
       tags: [RouteTag.Location],
       consumes: [ContentType.JSON],
       produces: [ContentType.JSON],
-      params: generateJSONSchemaParams(routeLocationGetPath),
+      params: generateJSONSchemaParams(routeLocationGetPath, [{
+        key: 'id',
+        value: 'integer'
+      }]),
       response: {
         200: generateJSONSchemaObject(locationDetail, 'Store Location Information', 'Information about the specified store location.'),
         400: errorHandlerSchemas.HTTP400,

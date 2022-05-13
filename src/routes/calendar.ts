@@ -73,8 +73,7 @@ const calendarJSON: Calendar = {
         name: 'Location #1',
         url: '#',
         address: {
-          address1: '123 Fake Street',
-          address2: 'Suite 100',
+          street: '123 Fake Street',
           city: 'Beverly Hills',
           state: 'CA',
           postal: 90210,
@@ -103,8 +102,7 @@ const calendarJSON: Calendar = {
         name: 'Location #2',
         url: '#',
         address: {
-          address1: '456 Fake Street',
-          address2: 'Suite 200',
+          street: '456 Fake Street',
           city: 'Beverly Hills',
           state: 'CA',
           postal: 90210,

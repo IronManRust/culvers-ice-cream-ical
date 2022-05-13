@@ -17,7 +17,7 @@ export const generateJSONSchemaObject = (value: unknown, title: string | undefin
     },
     required: false,
     strings: {
-      detectFormat: true
+      detectFormat: false
     }
   })
   schema.title = title
@@ -26,7 +26,7 @@ export const generateJSONSchemaObject = (value: unknown, title: string | undefin
   return schema
 }
 
-type TypedParameterValue = 'number' | 'string'
+type TypedParameterValue = 'boolean' | 'integer' | 'number' | 'string' // Not Supported: 'array' | 'object'
 
 interface TypedParameter {
   key: string
@@ -63,8 +63,14 @@ export const generateJSONSchemaParams = (path: string, typedParameters?: TypedPa
         }
       }
       switch (typedParameterValue) {
-        case 'number':
+        case 'boolean':
+          value[x] = false
+          break
+        case 'integer':
           value[x] = 0
+          break
+        case 'number':
+          value[x] = 0.1
           break
         case 'string':
         default:
