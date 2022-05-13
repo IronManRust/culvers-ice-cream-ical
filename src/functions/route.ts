@@ -26,25 +26,52 @@ export const generateJSONSchemaObject = (value: unknown, title: string | undefin
   return schema
 }
 
+type TypedParameterValue = 'number' | 'string'
+
+interface TypedParameter {
+  key: string
+  value: TypedParameterValue
+}
+
+interface DynamicObject {
+  [key: string]: unknown
+}
+
 /**
  * Parses a path into params.
  * @param {string} path - The path to parse.
+ * @param {TypedParameter[]} typedParameters - Optional parameter types.
  * @returns {ToJsonSchema.JSONSchema3or4 | undefined} - A JSON Schema representation of the params.
  */
-export const generateJSONSchemaParams = (path: string): ToJsonSchema.JSONSchema3or4 | undefined => {
+export const generateJSONSchemaParams = (path: string, typedParameters?: TypedParameter[]): ToJsonSchema.JSONSchema3or4 | undefined => {
   const parts =
     path
       .split('/')
       .filter((x) => { return x.startsWith(':') })
       .map((x) => { return x.substring(1) })
   if (parts && parts.length > 0) {
-    interface DynamicObject {
-      [key: string]: string
-    }
     const value: DynamicObject = {
       // Start with no values.
     }
-    parts.forEach((x) => { value[x] = '' })
+    parts.forEach((x) => {
+      let typedParameterValue: TypedParameterValue = 'string'
+      if (typedParameters) {
+        for (const typedParameter of typedParameters) {
+          if (typedParameter.key.trim().toLowerCase() === x.trim().toLowerCase()) {
+            typedParameterValue = typedParameter.value
+          }
+        }
+      }
+      switch (typedParameterValue) {
+        case 'number':
+          value[x] = 0
+          break
+        case 'string':
+        default:
+          value[x] = ''
+          break
+      }
+    })
     return generateJSONSchemaObject(value, '', '')
   } else {
     return undefined
