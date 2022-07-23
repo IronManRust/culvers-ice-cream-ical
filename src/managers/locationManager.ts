@@ -185,3 +185,15 @@ export const getLocation = async (request: FastifyRequest): Promise<CachedAsset<
   const location = getLocationCache(request.cache, locationParams.id) ?? setLocationCache(request.cache, await getLocationScrape(request.log, locationParams.id))
   return location
 }
+
+/**
+ * Gets a store location.
+ * @param {Cache} cache - The cache object.
+ * @param {FastifyLoggerInstance} logger - The logger instance.
+ * @param {number} locationID - The ID of the store location.
+ * @returns {LocationDetail} - Information about the specified store location.
+ */
+export const getLocationInternal = async (cache: Cache, logger: FastifyLoggerInstance, locationID: number): Promise<LocationDetail> => {
+  const location = getLocationCache(cache, locationID) ?? setLocationCache(cache, await getLocationScrape(logger, locationID))
+  return location.data
+}

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { FastifyLoggerInstance, FastifyRequest } from 'fastify'
+import { unescape } from 'html-escaper'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import { parse } from 'node-html-parser'
@@ -45,7 +46,7 @@ const getFlavorListScrape = async (logger: FastifyLoggerInstance): Promise<Flavo
         const responseDescription = await axios.get(flavorURL)
         const flavorDetail: FlavorDetail = {
           key: (item.getElementsByTagName('a')[0].getAttribute('href') ?? '').replace('/flavor-of-the-day/', ''),
-          name: item.getElementsByTagName('strong')[0].innerText,
+          name: unescape(item.getElementsByTagName('strong')[0].innerText),
           flavorURL,
           imageURL: `https:${item.getElementsByTagName('img')[0].getAttribute('src')}`,
           description: responseDescription.status === StatusCodes.OK
@@ -108,5 +109,28 @@ export const getFlavor = async (request: FastifyRequest): Promise<CachedAsset<Fl
     }
   } else {
     throw new httpErrors.NotFound('No matching flavor found.')
+  }
+}
+
+/**
+ * Gets a flavor.
+ * @param {Cache} cache - The cache object.
+ * @param {FastifyLoggerInstance} logger - The logger instance.
+ * @param {string} flavorName - The name of the flavor.
+ * @returns {FlavorDetail} - Information about the specified flavor.
+ */
+export const getFlavorInternal = async (cache: Cache, logger: FastifyLoggerInstance, flavorName: string): Promise<FlavorDetail> => {
+  const flavorList = getFlavorListCache(cache) ?? setFlavorListCache(cache, await getFlavorListScrape(logger))
+  for (const flavor of flavorList.data.items) {
+    if (flavor.name.trim().toLowerCase() === flavorName.trim().toLowerCase()) {
+      return flavor
+    }
+  }
+  return {
+    key: 'unknown-flavor',
+    name: 'Unknown Flavor',
+    flavorURL: '#',
+    imageURL: '#',
+    description: ''
   }
 }

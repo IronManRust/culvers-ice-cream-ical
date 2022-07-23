@@ -1,4 +1,5 @@
 import { FastifyInstance } from 'fastify'
+import { HTTPHeader } from '../constants/httpHeader'
 import { getCalendarFeed, getCalendarJSON } from '../managers/calendarManager'
 import { RouteCalendarFeed, RouteCalendarJSON } from '../routes/calendar'
 
@@ -15,12 +16,12 @@ export const registerCalendarController = (fastifyInstance: FastifyInstance): vo
       // TODO: Add Expiration Header
       .send(value)
   })
-  fastifyInstance.get(RouteCalendarJSON.path, RouteCalendarJSON.options, (request, response) => {
-    const value = getCalendarJSON(request)
+  fastifyInstance.get(RouteCalendarJSON.path, RouteCalendarJSON.options, async (request, response) => {
+    const value = await getCalendarJSON(request)
     // TODO: Add Hypermedia
     response
       .code(RouteCalendarJSON.successCode)
-      // TODO: Add Expiration Header
-      .send(value)
+      .header(HTTPHeader.Expires, value.expires.toUTCString())
+      .send(value.data)
   })
 }

@@ -36,7 +36,9 @@
         "all-the-things": "npm run clean && npm run build && npm run lint"
     },
     "devDependencies": {
+        "@types/html-escaper": "^3.0.0",
         "@types/http-errors": "^1.8.2",
+        "@types/ical": "^0.8.0",
         "@types/node": "^17.0.24",
         "@types/pino": "^7.0.5",
         "@types/to-json-schema": "^0.2.1",
@@ -56,8 +58,10 @@
         "fastify": "^3.28.0",
         "fastify-static": "^4.6.1",
         "fastify-swagger": "^5.1.1",
+        "html-escaper": "^3.0.3",
         "http-errors": "^2.0.0",
         "http-status-codes": "^2.2.0",
+        "ical": "^0.8.0",
         "node-cache": "^5.1.2",
         "node-html-parser": "^5.3.3",
         "pino": "^7.10.0",
