@@ -128,7 +128,7 @@ export const getFlavorInternal = async (cache: Cache, logger: FastifyLoggerInsta
   }
   return {
     key: 'unknown-flavor',
-    name: `Unknown Flavor - ${flavorName}`,
+    name: flavorName,
     flavorURL: '',
     imageURL: '',
     description: ''
