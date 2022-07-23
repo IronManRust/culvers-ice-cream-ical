@@ -49,9 +49,7 @@ const getFlavorListScrape = async (logger: FastifyLoggerInstance): Promise<Flavo
           name: unescape(item.getElementsByTagName('strong')[0].innerText),
           flavorURL,
           imageURL: `https:${item.getElementsByTagName('img')[0].getAttribute('src')}`,
-          description: responseDescription.status === StatusCodes.OK
-            ? parse(responseDescription.data).querySelectorAll('.ModuleFotdDetail-description')[0].getElementsByTagName('p')[0].innerText
-            : '<Description Not Available>'
+          description: responseDescription.status === StatusCodes.OK ? unescape(parse(responseDescription.data).querySelectorAll('.ModuleFotdDetail-description')[0].getElementsByTagName('p')[0].innerText) : ''
         }
         return flavorDetail
       }))

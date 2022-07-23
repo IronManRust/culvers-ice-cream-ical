@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { FastifyLoggerInstance, FastifyRequest } from 'fastify'
+import { unescape } from 'html-escaper'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import { parse } from 'node-html-parser'
@@ -46,7 +47,7 @@ const searchLocationListScrape = async (logger: FastifyLoggerInstance, postal: s
         return {
           id: x.Id,
           key: x.Url.split('/')[x.Url.split('/').length - 1],
-          name: x.Name,
+          name: unescape(x.Name),
           url: x.Url
         }
       })
@@ -152,12 +153,12 @@ const getLocationScrape = async (logger: FastifyLoggerInstance, locationID: numb
       const locationDetail: LocationDetail = {
         id: locationID,
         key: response.request.res.responseUrl.split('/').slice(-1),
-        name: html.getElementsByTagName('h1')[0].innerText.trim(),
+        name: unescape(html.getElementsByTagName('h1')[0].innerText.trim()),
         url: response.request.res.responseUrl,
         address: {
-          street: (html.querySelector('.street-address')?.innerText ?? '').trim(),
-          city: (html.querySelector('.locality')?.innerText ?? '').trim(),
-          state: (html.querySelector('.region')?.innerText ?? '').trim(),
+          street: unescape((html.querySelector('.street-address')?.innerText ?? '').trim()),
+          city: unescape((html.querySelector('.locality')?.innerText ?? '').trim()),
+          state: unescape((html.querySelector('.region')?.innerText ?? '').trim()),
           postal: Number((html.querySelector('.postal-code')?.innerText ?? '').trim()),
           country: 'US'
         },

@@ -114,12 +114,11 @@ export const getCalendarFeed = (request: FastifyRequest): string => {
  * @returns {CachedAsset<Calendar>} - A Flavor of the Day calendar in JSON format.
  */
 export const getCalendarJSON = async (request: FastifyRequest): Promise<CachedAsset<Calendar>> => {
-  // TODO: Filter On Flavor Key
   const calendarQuery = request.query as CalendarQuery
   const calendarItems: CalendarItem[] = []
   const dates = getDatesThisMonthAndNext()
   await getFlavorList(request) // Ensure Flavors Are Pre-Cached
-  const locationCalendarItemsList = await Promise.all(calendarQuery.locationID.map(async (locationID) => {
+  const locationCalendarItemsList = await Promise.all((calendarQuery.locationID ?? []).map(async (locationID) => {
     try {
       await getLocationInternal(request.cache, request.log, locationID) // Ensure Location Is Pre-Cached
     } catch {
@@ -132,7 +131,15 @@ export const getCalendarJSON = async (request: FastifyRequest): Promise<CachedAs
   }))
   for (const locationCalendarItems of locationCalendarItemsList) {
     for (const locationCalendarItem of locationCalendarItems) {
-      calendarItems.push(locationCalendarItem.data)
+      if ((calendarQuery.flavorKey ?? []).length > 0) {
+        for (const flavorKey of calendarQuery.flavorKey ?? []) {
+          if (flavorKey.trim().toLowerCase() === locationCalendarItem.data.flavor.key.trim().toLowerCase()) {
+            calendarItems.push(locationCalendarItem.data)
+          }
+        }
+      } else {
+        calendarItems.push(locationCalendarItem.data)
+      }
     }
   }
   return {
