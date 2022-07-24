@@ -8,13 +8,13 @@ import { RouteCalendarFeed, RouteCalendarJSON } from '../routes/calendar'
  * @param {FastifyInstance} fastifyInstance - The instance of the Fastify runtime to apply the routing to.
  */
 export const registerCalendarController = (fastifyInstance: FastifyInstance): void => {
-  fastifyInstance.get(RouteCalendarFeed.path, RouteCalendarFeed.options, (request, response) => {
-    const value = getCalendarFeed(request)
+  fastifyInstance.get(RouteCalendarFeed.path, RouteCalendarFeed.options, async (request, response) => {
+    const value = await getCalendarFeed(request)
     // TODO: Add Hypermedia
     response
       .code(RouteCalendarFeed.successCode)
-      // TODO: Add Expiration Header
-      .send(value)
+      .header(HTTPHeader.Expires, value.expires.toUTCString())
+      .send(value.data)
   })
   fastifyInstance.get(RouteCalendarJSON.path, RouteCalendarJSON.options, async (request, response) => {
     const value = await getCalendarJSON(request)

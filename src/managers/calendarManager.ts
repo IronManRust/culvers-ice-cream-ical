@@ -3,6 +3,7 @@ import { FastifyLoggerInstance, FastifyRequest } from 'fastify'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import ical from 'ical'
+import icalGenerator from 'ical-generator'
 import { getFlavorList, getFlavorInternal } from './flavorManager'
 import { getLocationInternal } from './locationManager'
 import { getCacheKeyCalendar } from '../functions/cacheKeys'
@@ -73,8 +74,9 @@ const getCalendarItemScrape = async (cache: Cache, logger: FastifyLoggerInstance
     logger.info('scrape calendar item - success')
     return {
       date: {
-        start: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0).toISOString(),
-        end: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59).toISOString()
+        // TODO: Use proper day-of-the-week hours.
+        start: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 5, 0, 0).toISOString(),
+        end: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 15, 0, 0).toISOString()
       },
       flavor,
       location
@@ -83,29 +85,6 @@ const getCalendarItemScrape = async (cache: Cache, logger: FastifyLoggerInstance
     logger.info('scrape calendar item - failure')
     throw new httpErrors.InternalServerError('Unable to retrieve calendar item data.')
   }
-}
-
-/**
- * Gets a calendar.
- * @param {FastifyRequest} request - The request instance.
- * @returns {string} - A Flavor of the Day calendar in iCal format.
- */
-export const getCalendarFeed = (request: FastifyRequest): string => {
-  // TODO: Stub Operation
-  const calendarQuery = request.query as CalendarQuery
-  console.log(`getCalendarFeed(${JSON.stringify(calendarQuery)})`)
-  return String`
-    BEGIN:VCALENDAR
-    PRODID:-//Culver's//NONSGML Flavor of the Day//EN
-    VERSION:2.0
-    BEGIN:VEVENT
-    ...
-    END:VEVENT
-    BEGIN:VEVENT
-    ...
-    END:VEVENT
-    END:VCALENDAR
-  `
 }
 
 /**
@@ -147,5 +126,37 @@ export const getCalendarJSON = async (request: FastifyRequest): Promise<CachedAs
       items: calendarItems
     },
     expires: new Date() // TODO: Newest Expiration
+  }
+}
+
+/**
+ * Gets a calendar.
+ * @param {FastifyRequest} request - The request instance.
+ * @returns {CachedAsset<string>} - A Flavor of the Day calendar in iCal format.
+ */
+export const getCalendarFeed = async (request: FastifyRequest): Promise<CachedAsset<string>> => {
+  const calendarData = await getCalendarJSON(request)
+  const calendar = icalGenerator({
+    // TODO: Include Location / Flavor Details
+    name: 'Culver\'s Flavor of the Day Calendar'
+  })
+  calendarData.data.items.forEach((calendarItem) => {
+    // TODO: Tweak Data / Include More Data Points
+    const dateStart = new Date(calendarItem.date.start)
+    const dateEnd = new Date(calendarItem.date.end)
+    calendar.createEvent({
+      id: getCacheKeyCalendar(calendarItem.location.id, dateStart.getFullYear(), dateStart.getMonth() + 1, dateStart.getDate()),
+      summary: `Culver's Flavor of the Day - ${calendarItem.location.address.city} - ${calendarItem.location.address.street} - ${calendarItem.flavor.name}`,
+      description: calendarItem.flavor.description,
+      location: `${calendarItem.location.address.street}, ${calendarItem.location.address.city}, ${calendarItem.location.address.state} ${calendarItem.location.address.postal}, ${calendarItem.location.address.country}`,
+      allDay: false,
+      start: dateStart,
+      end: dateEnd,
+      url: calendarItem.location.url
+    })
+  })
+  return {
+    data: calendar.toString(),
+    expires: calendarData.expires
   }
 }

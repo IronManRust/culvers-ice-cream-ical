@@ -62,6 +62,7 @@
         "http-errors": "^2.0.0",
         "http-status-codes": "^2.2.0",
         "ical": "^0.8.0",
+        "ical-generator": "^3.4.3",
         "node-cache": "^5.1.2",
         "node-html-parser": "^5.3.3",
         "pino": "^7.10.0",
