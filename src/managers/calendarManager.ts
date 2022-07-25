@@ -3,7 +3,8 @@ import { FastifyLoggerInstance, FastifyRequest } from 'fastify'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import ical from 'ical'
-import icalGenerator from 'ical-generator'
+import icalGenerator, { ICalAlarmType, ICalEventBusyStatus, ICalEventStatus } from 'ical-generator'
+import getUUID from 'uuid-by-string'
 import { getFlavorList, getFlavorInternal } from './flavorManager'
 import { getLocationInternal } from './locationManager'
 import { getCacheKeyCalendar } from '../functions/cacheKeys'
@@ -138,17 +139,23 @@ export const getCalendarFeed = async (request: FastifyRequest): Promise<CachedAs
     name: 'Culver\'s Flavor of the Day Calendar'
   })
   calendarData.data.items.forEach((calendarItem) => {
-    // TODO: Tweak Data / Include More Data Points
     const date = new Date(calendarItem.date)
     calendar.createEvent({
-      id: getCacheKeyCalendar(calendarItem.location.id, date.getFullYear(), date.getMonth() + 1, date.getDate()),
+      id: getUUID(getCacheKeyCalendar(calendarItem.location.id, date.getFullYear(), date.getMonth() + 1, date.getDate())),
       summary: `Culver's Flavor of the Day - ${calendarItem.location.address.city} - ${calendarItem.location.address.street} - ${calendarItem.flavor.name}`,
       description: calendarItem.flavor.description,
       location: `${calendarItem.location.address.street}, ${calendarItem.location.address.city}, ${calendarItem.location.address.state} ${calendarItem.location.address.postal}, ${calendarItem.location.address.country}`,
       allDay: false,
       start: buildCalendarDateOpen(date, calendarItem.location.schedule),
       end: buildCalendarDateClose(date, calendarItem.location.schedule),
-      url: calendarItem.location.url
+      url: calendarItem.location.url,
+      attachments: [calendarItem.flavor.imageURL],
+      busystatus: ICalEventBusyStatus.FREE,
+      alarms: [{
+        type: ICalAlarmType.display,
+        trigger: 900
+      }],
+      status: ICalEventStatus.TENTATIVE
     })
   })
   return {
