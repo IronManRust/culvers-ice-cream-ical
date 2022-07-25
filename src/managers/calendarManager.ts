@@ -135,8 +135,14 @@ export const getCalendarJSON = async (request: FastifyRequest): Promise<CachedAs
 export const getCalendarFeed = async (request: FastifyRequest): Promise<CachedAsset<string>> => {
   const calendarData = await getCalendarJSON(request)
   const calendar = icalGenerator({
-    // TODO: Include Location / Flavor Details
-    name: 'Culver\'s Flavor of the Day Calendar'
+    prodId: {
+      company: 'Culver\'s',
+      product: 'Flavor of the Day Calendar',
+      language: 'EN'
+    },
+    name: 'Culver\'s Flavor of the Day Calendar',
+    description: 'This calendar feed contains all of the Culver\'s Flavor of the Day events for the location(s) and flavor(s) specified.',
+    ttl: icalGenerator().ttl(60 * 60 * 4) // 4 Hours
   })
   calendarData.data.items.forEach((calendarItem) => {
     const date = new Date(calendarItem.date)
@@ -153,7 +159,7 @@ export const getCalendarFeed = async (request: FastifyRequest): Promise<CachedAs
       busystatus: ICalEventBusyStatus.FREE,
       alarms: [{
         type: ICalAlarmType.display,
-        trigger: 900
+        trigger: 900 // 15 Minutes
       }],
       status: ICalEventStatus.TENTATIVE
     })
