@@ -55,10 +55,7 @@ export const RouteCalendarFeed: Route = {
 const calendarJSON: Calendar = {
   items: [
     {
-      date: {
-        start: new Date('2020-01-01T00:00:00.000+00:00').toISOString(),
-        end: new Date('2020-01-01T23:59:59.000+00:00').toISOString()
-      },
+      date: new Date(2020, 0, 1).toLocaleDateString(),
       flavor: {
         key: 'flavor-1',
         name: 'Flavor #1',
@@ -84,10 +81,7 @@ const calendarJSON: Calendar = {
       links
     },
     {
-      date: {
-        start: new Date('2020-01-02T00:00:00.000+00:00').toISOString(),
-        end: new Date('2020-01-02T23:59:59.000+00:00').toISOString()
-      },
+      date: new Date(2020, 0, 2).toLocaleDateString(),
       flavor: {
         key: 'flavor-2',
         name: 'Flavor #2',

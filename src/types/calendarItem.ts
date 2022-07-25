@@ -3,10 +3,7 @@ import FlavorDetail from './flavorDetail'
 import LocationDetail from './locationDetail'
 
 export default interface CalendarItem extends BaseResponse {
-  date: {
-    start: string
-    end: string
-  }
+  date: string
   flavor: FlavorDetail,
   location: LocationDetail
 }

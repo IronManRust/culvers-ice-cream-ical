@@ -7,6 +7,7 @@ import icalGenerator from 'ical-generator'
 import { getFlavorList, getFlavorInternal } from './flavorManager'
 import { getLocationInternal } from './locationManager'
 import { getCacheKeyCalendar } from '../functions/cacheKeys'
+import { buildCalendarDateOpen, buildCalendarDateClose } from '../functions/schedule'
 import { Cache } from '../plugins/caching'
 import CachedAsset from '../types/cachedAsset'
 import Calendar from '../types/calendar'
@@ -51,7 +52,7 @@ const getCalendarItemCache = (cache: Cache, locationID: number, date: Date): Cac
  * @returns {CachedAsset<CalendarItem>} - A calendar item.
  */
 const setCalendarItemCache = (cache: Cache, calendarItem: CalendarItem): CachedAsset<CalendarItem> => {
-  const date = new Date(calendarItem.date.start)
+  const date = new Date(calendarItem.date)
   return cache.write<CalendarItem>(getCacheKeyCalendar(calendarItem.location.id, date.getFullYear(), date.getMonth() + 1, date.getDate()), calendarItem)
 }
 
@@ -73,11 +74,7 @@ const getCalendarItemScrape = async (cache: Cache, logger: FastifyLoggerInstance
     const location = await getLocationInternal(cache, logger, locationID)
     logger.info('scrape calendar item - success')
     return {
-      date: {
-        // TODO: Use proper day-of-the-week hours.
-        start: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 5, 0, 0).toISOString(),
-        end: new Date(date.getFullYear(), date.getMonth(), date.getDate(), 15, 0, 0).toISOString()
-      },
+      date: date.toLocaleDateString(),
       flavor,
       location
     }
@@ -142,16 +139,15 @@ export const getCalendarFeed = async (request: FastifyRequest): Promise<CachedAs
   })
   calendarData.data.items.forEach((calendarItem) => {
     // TODO: Tweak Data / Include More Data Points
-    const dateStart = new Date(calendarItem.date.start)
-    const dateEnd = new Date(calendarItem.date.end)
+    const date = new Date(calendarItem.date)
     calendar.createEvent({
-      id: getCacheKeyCalendar(calendarItem.location.id, dateStart.getFullYear(), dateStart.getMonth() + 1, dateStart.getDate()),
+      id: getCacheKeyCalendar(calendarItem.location.id, date.getFullYear(), date.getMonth() + 1, date.getDate()),
       summary: `Culver's Flavor of the Day - ${calendarItem.location.address.city} - ${calendarItem.location.address.street} - ${calendarItem.flavor.name}`,
       description: calendarItem.flavor.description,
       location: `${calendarItem.location.address.street}, ${calendarItem.location.address.city}, ${calendarItem.location.address.state} ${calendarItem.location.address.postal}, ${calendarItem.location.address.country}`,
       allDay: false,
-      start: dateStart,
-      end: dateEnd,
+      start: buildCalendarDateOpen(date, calendarItem.location.schedule),
+      end: buildCalendarDateClose(date, calendarItem.location.schedule),
       url: calendarItem.location.url
     })
   })
