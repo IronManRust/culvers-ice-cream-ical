@@ -4,11 +4,9 @@ import CacheOptions from './types/cacheOptions'
 import ListenOptions from './types/listenOptions'
 import LoggerOptions from './types/loggerOptions'
 
-// TODO: Inject options at runtime, either from a config file or from command line arguments.
-
 const listenOptions: ListenOptions = {
-  address: 'localhost',
-  port: Number(process.env.PORT)
+  address: process.env.HOST || '0.0.0.0',
+  port: Number(process.env.PORT || 8080)
 }
 
 const loggerOptions: LoggerOptions = {
