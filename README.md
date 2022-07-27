@@ -12,7 +12,7 @@ Generate a custom Culver's Flavor of the Day iCal feed.
 
 The [Culver's](https://www.culvers.com "Culver's") website lets you view the Flavor of the Day for a specific location and export individual days as iCal files. However, it doesn't let you generate an iCal feed for that location, reference multiple locations at once, or filter by flavor(s).
 
-This tool bridges that gap. It offers an [OpenAPI](https://www.openapis.org "OpenAPI")-complaint interface that offers endpoints to do the following:
+This tool bridges that gap. It offers an [OpenAPI](https://www.openapis.org "OpenAPI")-compliant interface that offers endpoints to do the following:
 
 * Search for store locations, and get details about a specific one.
 * Search for flavors, and get details about a specific one.
