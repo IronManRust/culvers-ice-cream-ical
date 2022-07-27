@@ -33,8 +33,7 @@
         "build:src": "tsc -p tsconfig.json",
         "lint": "eslint . --ext .ts,.tsx",
         "start": "node dist",
-        "all-the-things": "npm run clean && npm run build && npm run lint",
-        "heroku-postbuild": "npm run all-the-things && npm run start"
+        "all-the-things": "npm run clean && npm run build && npm run lint"
     },
     "devDependencies": {
         "@types/html-escaper": "^3.0.0",
