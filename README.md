@@ -22,6 +22,8 @@ Coming Soon!
 
 ## TODO
 
+* Favicon
+* Content-Type Headers
 * Hypermedia Links
 * Test Coverage Via Jest
 * `@throws` Annotations
