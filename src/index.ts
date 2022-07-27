@@ -8,7 +8,7 @@ import LoggerOptions from './types/loggerOptions'
 
 const listenOptions: ListenOptions = {
   address: 'localhost',
-  port: 8080
+  port: Number(process.env.PORT || 8080)
 }
 
 const loggerOptions: LoggerOptions = {
