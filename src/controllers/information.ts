@@ -1,4 +1,6 @@
 import { FastifyInstance } from 'fastify'
+import { HTTPHeader } from '../constants/httpHeader'
+import { getContentTypeList } from '../enums/contentType'
 import { getRoot, getStatus } from '../managers/informationManager'
 import { RouteRoot, RouteStatus } from '../routes/information'
 
@@ -12,6 +14,7 @@ export const registerInformationController = (fastifyInstance: FastifyInstance):
     // TODO: Add Hypermedia
     response
       .code(RouteRoot.successCode)
+      .header(HTTPHeader.ContentType, getContentTypeList(RouteRoot.options.schema.produces))
       .send(value)
   })
   fastifyInstance.get(RouteStatus.path, RouteStatus.options, (request, response) => {
@@ -19,6 +22,7 @@ export const registerInformationController = (fastifyInstance: FastifyInstance):
     // TODO: Add Hypermedia
     response
       .code(RouteStatus.successCode)
+      .header(HTTPHeader.ContentType, getContentTypeList(RouteStatus.options.schema.produces))
       .send(value)
   })
 }

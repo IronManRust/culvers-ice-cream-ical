@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { HTTPHeader } from '../constants/httpHeader'
+import { getContentTypeList } from '../enums/contentType'
 import { searchLocationList, getLocation } from '../managers/locationManager'
 import { RouteLocationSearch, RouteLocationGet } from '../routes/location'
 
@@ -13,6 +14,7 @@ export const registerLocationController = (fastifyInstance: FastifyInstance): vo
     // TODO: Add Hypermedia
     response
       .code(RouteLocationSearch.successCode)
+      .header(HTTPHeader.ContentType, getContentTypeList(RouteLocationSearch.options.schema.produces))
       .send(value)
   })
   fastifyInstance.get(RouteLocationGet.path, RouteLocationGet.options, async (request, response) => {
@@ -20,6 +22,7 @@ export const registerLocationController = (fastifyInstance: FastifyInstance): vo
     // TODO: Add Hypermedia
     response
       .code(RouteLocationGet.successCode)
+      .header(HTTPHeader.ContentType, getContentTypeList(RouteLocationGet.options.schema.produces))
       .header(HTTPHeader.Expires, value.expires.toUTCString())
       .send(value.data)
   })

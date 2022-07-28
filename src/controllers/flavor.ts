@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { HTTPHeader } from '../constants/httpHeader'
+import { getContentTypeList } from '../enums/contentType'
 import { getFlavorList, getFlavor } from '../managers/flavorManager'
 import { RouteFlavorList, RouteFlavorGet } from '../routes/flavor'
 
@@ -13,6 +14,7 @@ export const registerFlavorController = (fastifyInstance: FastifyInstance): void
     // TODO: Add Hypermedia
     response
       .code(RouteFlavorList.successCode)
+      .header(HTTPHeader.ContentType, getContentTypeList(RouteFlavorList.options.schema.produces))
       .header(HTTPHeader.Expires, value.expires.toUTCString())
       .send(value.data)
   })
@@ -21,6 +23,7 @@ export const registerFlavorController = (fastifyInstance: FastifyInstance): void
     // TODO: Add Hypermedia
     response
       .code(RouteFlavorGet.successCode)
+      .header(HTTPHeader.ContentType, getContentTypeList(RouteFlavorGet.options.schema.produces))
       .header(HTTPHeader.Expires, value.expires.toUTCString())
       .send(value.data)
   })

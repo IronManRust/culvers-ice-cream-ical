@@ -2,6 +2,8 @@ import { FastifyInstance, FastifyReply } from 'fastify'
 import FastifyStatic from 'fastify-static'
 import FastifySwagger from 'fastify-swagger'
 import fs from 'fs'
+import { HTTPHeader } from '../constants/httpHeader'
+import { ContentType, getContentTypeValue } from '../enums/contentType'
 import { RouteTag, getRouteTagDescription } from '../enums/routeTag'
 import { RouteIndex } from '../routes/information'
 
@@ -9,12 +11,14 @@ import { RouteIndex } from '../routes/information'
  * Returns a static file with the specified status code and file name.
  * @param {FastifyReply} response - The HTTP response object to return.
  * @param {number} statusCode - The HTTP status code to use.
+ * @param {ContentType} contentType - The HTTP content type to use.
  * @param {string} fileName - The file name to use.
  * @returns {FastifyReply} - The HTTP response object to return.
  */
-const sendStaticFile = (response: FastifyReply, statusCode: number, fileName: string): FastifyReply => {
+const sendStaticFile = (response: FastifyReply, statusCode: number, contentType: ContentType, fileName: string): FastifyReply => {
   return response
     .code(statusCode)
+    .header(HTTPHeader.ContentType, getContentTypeValue(contentType))
     .sendFile(fileName)
 }
 
@@ -82,6 +86,6 @@ export const setupDocumentation = (fastifyInstance: FastifyInstance): void => {
   })
 
   fastifyInstance.get(RouteIndex.path, RouteIndex.options, (_request, response) => {
-    sendStaticFile(response, RouteIndex.successCode, 'index.html')
+    sendStaticFile(response, RouteIndex.successCode, ContentType.HTML, 'index.html')
   })
 }

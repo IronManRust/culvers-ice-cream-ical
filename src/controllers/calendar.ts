@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { HTTPHeader } from '../constants/httpHeader'
+import { getContentTypeList } from '../enums/contentType'
 import { getCalendarFeed, getCalendarJSON } from '../managers/calendarManager'
 import { RouteCalendarFeed, RouteCalendarJSON } from '../routes/calendar'
 
@@ -13,6 +14,7 @@ export const registerCalendarController = (fastifyInstance: FastifyInstance): vo
     // TODO: Add Hypermedia
     response
       .code(RouteCalendarFeed.successCode)
+      .header(HTTPHeader.ContentType, getContentTypeList(RouteCalendarFeed.options.schema.produces))
       .header(HTTPHeader.Expires, value.expires.toUTCString())
       .send(value.data)
   })
@@ -21,6 +23,7 @@ export const registerCalendarController = (fastifyInstance: FastifyInstance): vo
     // TODO: Add Hypermedia
     response
       .code(RouteCalendarJSON.successCode)
+      .header(HTTPHeader.ContentType, getContentTypeList(RouteCalendarJSON.options.schema.produces))
       .header(HTTPHeader.Expires, value.expires.toUTCString())
       .send(value.data)
   })

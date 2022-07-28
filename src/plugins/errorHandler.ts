@@ -1,6 +1,8 @@
 import { FastifyInstance } from 'fastify'
 import { StatusCodes, getReasonPhrase } from 'http-status-codes'
 import ToJsonSchema from 'to-json-schema'
+import { HTTPHeader } from '../constants/httpHeader'
+import { ContentType, getContentTypeValue } from '../enums/contentType'
 import { generateJSONSchemaObject } from '../functions/route'
 import { links, metaData } from '../routes/common'
 import ErrorResponse from '../types/errorResponse'
@@ -20,6 +22,7 @@ export const setupErrorHandler = (fastifyInstance: FastifyInstance): void => {
     }
     response
       .code(errorResponse.statusCode)
+      .header(HTTPHeader.ContentType, getContentTypeValue(ContentType.JSON))
       .send(errorResponse)
   })
   fastifyInstance.setErrorHandler((error, _request, response) => {
@@ -37,6 +40,7 @@ export const setupErrorHandler = (fastifyInstance: FastifyInstance): void => {
     }
     response
       .code(errorResponse.statusCode)
+      .header(HTTPHeader.ContentType, getContentTypeValue(ContentType.JSON))
       .send(errorResponse)
   })
 }
