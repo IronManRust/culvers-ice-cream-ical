@@ -26,19 +26,24 @@
     },
     "main": "dist/index.js",
     "scripts": {
-        "clean": "rimraf dist",
+        "clean": "rimraf coverage dist",
         "build": "npm run build:static && npm run build:metadata && npm run build:src",
         "build:static": "copyfiles -f static/*.* dist",
         "build:metadata": "node package-metadata.js",
         "build:src": "tsc -p tsconfig.json",
         "lint": "eslint . --ext .ts,.tsx",
+        "test": "jest --coverage --detectOpenHandles --verbose",
         "start": "node dist",
-        "all-the-things": "npm run clean && npm run build && npm run lint"
+        "all-the-things": "npm run clean && npm run build && npm run lint && npm run test"
+    },
+    "engines": {
+        "node": "18"
     },
     "devDependencies": {
         "@types/html-escaper": "^3.0.0",
         "@types/http-errors": "^1.8.2",
         "@types/ical": "^0.8.0",
+        "@types/jest": "^28.1.6",
         "@types/node": "^17.0.24",
         "@types/pino": "^7.0.5",
         "@types/to-json-schema": "^0.2.1",
@@ -46,11 +51,14 @@
         "copyfiles": "^2.4.1",
         "eslint": "^7.32.0",
         "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-jest": "^26.6.0",
         "eslint-plugin-jsdoc": "^39.2.1",
         "eslint-plugin-prefer-arrow": "^1.2.3",
         "eslint-plugin-tsdoc": "^0.2.16",
+        "jest": "^28.1.3",
         "prettier": "^2.6.2",
         "rimraf": "^3.0.2",
+        "ts-jest": "^28.0.7",
         "typescript": "^4.6.3"
     },
     "dependencies": {

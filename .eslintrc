@@ -11,6 +11,7 @@
   },
   "plugins": [
     "@typescript-eslint",
+    "jest",
     "jsdoc",
     "prefer-arrow",
     "tsdoc"
@@ -19,6 +20,7 @@
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
     "plugin:jsdoc/recommended",
     "prettier"
   ],
