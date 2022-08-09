@@ -1,5 +1,5 @@
 import cluster from 'cluster'
-import os from 'os'
+// TODO: Enable Clustering - import os from 'os'
 import Server, { displayServerBanner } from './server'
 import CacheOptions from './types/cacheOptions'
 import ListenOptions from './types/listenOptions'
@@ -20,7 +20,7 @@ export default class Cluster {
    */
   public constructor(listenOptions: ListenOptions, loggerOptions: LoggerOptions, cacheOptions: CacheOptions) {
     if (cluster.isPrimary) {
-      const cpuCount = os.cpus().length
+      const cpuCount = 1 // TODO: Enable Clustering - os.cpus().length
       displayServerBanner(cpuCount)
       for (let i = 0; i < cpuCount; i++) {
         cluster.fork()
