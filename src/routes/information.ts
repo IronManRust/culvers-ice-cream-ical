@@ -66,6 +66,7 @@ export const RouteRoot: Route = {
 
 const status: Status = {
   health: HealthStatus.Healthy,
+  memoryUsed: 1048576,
   cacheStatistics: {
     items: [
       {

@@ -22,6 +22,7 @@ export const getRoot = (): BaseResponse => {
 export const getStatus = (request: FastifyRequest): Status => {
   return {
     health: HealthStatus.Healthy, // Until there is a service dependency that can be unhealthy, this is hard-coded.
+    memoryUsed: process.memoryUsage().rss,
     cacheStatistics: request.cache.getStatistics(getCachePrefixes())
   }
 }

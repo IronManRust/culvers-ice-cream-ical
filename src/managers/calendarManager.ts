@@ -12,6 +12,7 @@ import { buildCalendarDateOpen, buildCalendarDateClose } from '../functions/sche
 import { Cache } from '../plugins/caching'
 import CachedAsset from '../types/cachedAsset'
 import Calendar from '../types/calendar'
+import CalendarHeader from '../types/calendarHeader'
 import CalendarItem from '../types/calendarItem'
 import CalendarQuery from '../types/calendarQuery'
 
@@ -36,52 +37,70 @@ const getDatesThisMonthAndNext = (): Date[] => {
 }
 
 /**
- * Gets a calendar item by reading from the cache.
+ * Gets a calendar header by reading from the cache.
  * @param {Cache} cache - The cache object.
  * @param {number} locationID - The ID of the store location.
- * @param {Date} date - The calendar item date.
- * @returns {CachedAsset<CalendarItem> | undefined} - A calendar item.
+ * @param {Date} date - The calendar header date.
+ * @returns {CachedAsset<CalendarHeader> | undefined} - A calendar header.
  */
-const getCalendarItemCache = (cache: Cache, locationID: number, date: Date): CachedAsset<CalendarItem> | undefined => {
-  return cache.read<CalendarItem>(getCacheKeyCalendar(locationID, date.getFullYear(), date.getMonth() + 1, date.getDate()))
+const getCalendarHeaderCache = (cache: Cache, locationID: number, date: Date): CachedAsset<CalendarHeader> | undefined => {
+  return cache.read<CalendarHeader>(getCacheKeyCalendar(locationID, date.getFullYear(), date.getMonth() + 1, date.getDate()))
 }
 
 /**
- * Writes a calendar item to the cache.
+ * Writes a calendar header to the cache.
  * @param {Cache} cache - The cache object.
- * @param {CalendarItem} calendarItem - A calendar item.
- * @returns {CachedAsset<CalendarItem>} - A calendar item.
+ * @param {CalendarHeader} calendarHeader - A calendar header.
+ * @returns {CachedAsset<CalendarHeader>} - A calendar header.
  */
-const setCalendarItemCache = (cache: Cache, calendarItem: CalendarItem): CachedAsset<CalendarItem> => {
-  const date = new Date(calendarItem.date)
-  return cache.write<CalendarItem>(getCacheKeyCalendar(calendarItem.location.id, date.getFullYear(), date.getMonth() + 1, date.getDate()), calendarItem)
+const setCalendarHeaderCache = (cache: Cache, calendarHeader: CalendarHeader): CachedAsset<CalendarHeader> => {
+  const date = new Date(calendarHeader.date)
+  return cache.write<CalendarHeader>(getCacheKeyCalendar(calendarHeader.locationID, date.getFullYear(), date.getMonth() + 1, date.getDate()), calendarHeader)
 }
 
 /**
- * Gets a calendar item by scraping the Culver's website.
+ * Gets a calendar header by scraping the Culver's website.
  * @param {Cache} cache - The cache object.
  * @param {FastifyLoggerInstance} logger - The logger instance.
  * @param {number} locationID - The ID of the store location.
- * @param {Date} date - The calendar item date.
- * @returns {CalendarItem} - A calendar item.
+ * @param {Date} date - The calendar header date.
+ * @returns {CalendarHeader} - A calendar header.
  */
-const getCalendarItemScrape = async (cache: Cache, logger: FastifyLoggerInstance, locationID: number, date: Date): Promise<CalendarItem> => {
-  logger.info('scrape calendar item - begin')
+const getCalendarHeaderScrape = async (cache: Cache, logger: FastifyLoggerInstance, locationID: number, date: Date): Promise<CalendarHeader> => {
+  logger.info('scrape calendar header - begin')
   const response = await axios.get(`https://www.culvers.com/fotd-add-to-calendar/${locationID}/${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`)
   if (response.status === StatusCodes.OK) {
     const data = ical.parseICS(response.data)
     const event = data[Object.keys(data)[0]]
-    const flavor = await getFlavorInternal(cache, logger, event.summary ?? '')
-    const location = await getLocationInternal(cache, logger, locationID)
-    logger.info('scrape calendar item - success')
+    logger.info('scrape calendar header - success')
     return {
       date: date.toLocaleDateString(),
-      flavor,
-      location
+      flavorKey: event.summary ?? '',
+      locationID
     }
   } else {
-    logger.info('scrape calendar item - failure')
-    throw new httpErrors.InternalServerError('Unable to retrieve calendar item data.')
+    logger.info('scrape calendar header - failure')
+    throw new httpErrors.InternalServerError('Unable to retrieve calendar header data.')
+  }
+}
+
+/**
+ * Builds a calendar item from a calendar header.
+ * @param {Cache} cache - The cache object.
+ * @param {FastifyLoggerInstance} logger - The logger instance.
+ * @param {CachedAsset<CalendarHeader>} calendarHeader - A calendar header.
+ * @returns {CachedAssed<CalendarItem>} - A calendar item.
+ */
+const buildCalendarItem = async (cache: Cache, logger: FastifyLoggerInstance, calendarHeader: CachedAsset<CalendarHeader>): Promise<CachedAsset<CalendarItem>> => {
+  const flavor = await getFlavorInternal(cache, logger, calendarHeader.data.flavorKey)
+  const location = await getLocationInternal(cache, logger, calendarHeader.data.locationID)
+  return {
+    data: {
+      date: calendarHeader.data.date,
+      flavor,
+      location
+    },
+    expires: calendarHeader.expires
   }
 }
 
@@ -102,20 +121,26 @@ export const getCalendarJSON = async (request: FastifyRequest): Promise<CachedAs
       return [] // Skip Invalid Locations
     }
     const locationCalendarItems = await Promise.all(dates.map(async (date) => {
-      return getCalendarItemCache(request.cache, locationID, date) ?? setCalendarItemCache(request.cache, await getCalendarItemScrape(request.cache, request.log, locationID, date))
+      try {
+        return buildCalendarItem(request.cache, request.log, getCalendarHeaderCache(request.cache, locationID, date) ?? setCalendarHeaderCache(request.cache, await getCalendarHeaderScrape(request.cache, request.log, locationID, date)))
+      } catch {
+        return null // Skip Cache Miss Followed By Failed Calendar Header Scrape
+      }
     }))
     return locationCalendarItems
   }))
   for (const locationCalendarItems of locationCalendarItemsList) {
     for (const locationCalendarItem of locationCalendarItems) {
-      if ((calendarQuery.flavorKey ?? []).length > 0) {
-        for (const flavorKey of calendarQuery.flavorKey ?? []) {
-          if (flavorKey.trim().toLowerCase() === locationCalendarItem.data.flavor.key.trim().toLowerCase()) {
-            calendarItems.push(locationCalendarItem.data)
+      if (locationCalendarItem !== null) {
+        if ((calendarQuery.flavorKey ?? []).length > 0) {
+          for (const flavorKey of calendarQuery.flavorKey ?? []) {
+            if (flavorKey.trim().toLowerCase() === locationCalendarItem.data.flavor.key.trim().toLowerCase()) {
+              calendarItems.push(locationCalendarItem.data)
+            }
           }
+        } else {
+          calendarItems.push(locationCalendarItem.data)
         }
-      } else {
-        calendarItems.push(locationCalendarItem.data)
       }
     }
   }
