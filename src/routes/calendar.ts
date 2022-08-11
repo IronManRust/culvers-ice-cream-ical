@@ -25,7 +25,9 @@ const calendarFeed: string = String`
 `
 const calendarQueryFeed: CalendarQuery = {
   locationID: [1, 2],
-  flavorKey: ['flavor-1', 'flavor-2']
+  l: [3, 4],
+  flavorKey: ['flavor-1', 'flavor-2'],
+  f: ['flavor-3', 'flavor-4']
 }
 const routeCalendarFeedPath = '/api/calendar/feed'
 export const RouteCalendarFeed: Route = {
@@ -111,7 +113,9 @@ const calendarJSON: Calendar = {
 }
 const calendarQueryJSON: CalendarQuery = {
   locationID: [1, 2],
-  flavorKey: ['flavor-1', 'flavor-2']
+  l: [3, 4],
+  flavorKey: ['flavor-1', 'flavor-2'],
+  f: ['flavor-3', 'flavor-4']
 }
 const routeCalendarJSONPath = '/api/calendar/json'
 export const RouteCalendarJSON: Route = {

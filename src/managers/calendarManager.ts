@@ -8,6 +8,7 @@ import getUUID from 'uuid-by-string'
 import { getFlavorList, getFlavorInternal } from './flavorManager'
 import { getLocationInternal } from './locationManager'
 import { getCacheKeyCalendar } from '../functions/cacheKeys'
+import { combineAliasesCalendar } from '../functions/combineAliases'
 import { buildCalendarDateOpen, buildCalendarDateClose } from '../functions/schedule'
 import { Cache } from '../plugins/caching'
 import CachedAsset from '../types/cachedAsset'
@@ -110,11 +111,11 @@ const buildCalendarItem = async (cache: Cache, logger: FastifyLoggerInstance, ca
  * @returns {CachedAsset<Calendar>} - A Flavor of the Day calendar in JSON format.
  */
 export const getCalendarJSON = async (request: FastifyRequest): Promise<CachedAsset<Calendar>> => {
-  const calendarQuery = request.query as CalendarQuery
+  const calendarQuery = combineAliasesCalendar(request.query as CalendarQuery)
   const calendarItems: CalendarItem[] = []
   const dates = getDatesThisMonthAndNext()
   await getFlavorList(request) // Ensure Flavors Are Pre-Cached
-  const locationCalendarItemsList = await Promise.all((calendarQuery.locationID ?? []).map(async (locationID) => {
+  const locationCalendarItemsList = await Promise.all(calendarQuery.locationID.map(async (locationID) => {
     try {
       await getLocationInternal(request.cache, request.log, locationID) // Ensure Location Is Pre-Cached
     } catch {
@@ -132,8 +133,8 @@ export const getCalendarJSON = async (request: FastifyRequest): Promise<CachedAs
   for (const locationCalendarItems of locationCalendarItemsList) {
     for (const locationCalendarItem of locationCalendarItems) {
       if (locationCalendarItem !== null) {
-        if ((calendarQuery.flavorKey ?? []).length > 0) {
-          for (const flavorKey of calendarQuery.flavorKey ?? []) {
+        if (calendarQuery.flavorKey.length > 0) {
+          for (const flavorKey of calendarQuery.flavorKey) {
             if (flavorKey.trim().toLowerCase() === locationCalendarItem.data.flavor.key.trim().toLowerCase()) {
               calendarItems.push(locationCalendarItem.data)
             }

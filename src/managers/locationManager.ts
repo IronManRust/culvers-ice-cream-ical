@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes'
 import { parse } from 'node-html-parser'
 import postalCodes from 'postal-codes-js'
 import { getCacheKeyLocation } from '../functions/cacheKeys'
+import { combineAliasesLocationList } from '../functions/combineAliases'
 import { Cache } from '../plugins/caching'
 import CachedAsset from '../types/cachedAsset'
 import LocationDetail from '../types/locationDetail'
@@ -69,7 +70,7 @@ const searchLocationListScrape = async (logger: FastifyLoggerInstance, postal: s
  * @returns {LocationList} - A list of the nearest store locations.
  */
 export const searchLocationList = async (request: FastifyRequest): Promise<LocationList> => {
-  const locationListQuery = request.query as LocationListQuery
+  const locationListQuery = combineAliasesLocationList(request.query as LocationListQuery)
   if (postalCodes.validate('US', locationListQuery.postal) !== true) {
     throw new httpErrors.BadRequest('Invalid postal code.')
   }
