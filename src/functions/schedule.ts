@@ -12,7 +12,7 @@ import { ScheduleDayDefaultOpen, ScheduleDayDefaultClose } from '../types/schedu
  */
 const buildCalendarDate = (date: Date, time: string, timezone: string): Date => {
   return convertTimeToDate(setTimeZone(new Date(`${date.toLocaleDateString()} ${time}`), findTimeZone(timezone), {
-    useUTC: false
+    useUTC: true
   }))
 }
 

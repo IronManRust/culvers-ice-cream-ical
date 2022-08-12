@@ -189,8 +189,7 @@ export const getCalendarFeed = async (request: FastifyRequest): Promise<CachedAs
         type: ICalAlarmType.display,
         trigger: 900 // 15 Minutes
       }],
-      status: ICalEventStatus.TENTATIVE,
-      timezone
+      status: ICalEventStatus.TENTATIVE
     })
   })
   return {
