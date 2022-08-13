@@ -54,6 +54,57 @@ export const RouteCalendarFeed: Route = {
   }
 }
 
+const calendarRSS = String`
+  <?xml version="1.0" encoding="UTF-8" ?>
+  <rss version="2.0">
+    <channel>
+      <title>Culver's Flavor of the Day Calendar</title>
+      <link>https://www.example.com</link>
+      <description>This calendar feed contains all of the Culver's Flavor of the Day events for the location(s) and flavor(s) specified.</description>
+      <item>
+        <title>Culver's Flavor of the Day - Flavor 1 (Location)</title>
+        <link>https://www.example.com</link>
+        <description>Flavor 1 Description</description>
+      </item>
+      <item>
+        <title>Culver's Flavor of the Day - Flavor 2 (Location)</title>
+        <link>https://www.example.com</link>
+        <description>Flavor 2 Description</description>
+      </item>
+    </channel>
+  </rss> 
+`
+const calendarQueryRSS: CalendarQuery = {
+  locationID: [1, 2],
+  l: [3, 4],
+  flavorKey: ['flavor-1', 'flavor-2'],
+  f: ['flavor-3', 'flavor-4']
+}
+const routeCalendarRSSPath = '/api/calendar/rss'
+export const RouteCalendarRSS: Route = {
+  verb: RouteVerb.GET,
+  path: routeCalendarRSSPath,
+  successCode: StatusCodes.OK,
+  options: {
+    schema: {
+      hide: false,
+      operationId: 'getCalendarRSS',
+      summary: 'Gets a calendar.',
+      description: 'Gets a Flavor of the Day calendar in RSS format.',
+      tags: [RouteTag.Calendar],
+      consumes: [ContentType.JSON],
+      produces: [ContentType.RSS],
+      query: generateJSONSchemaObject(calendarQueryRSS, 'Calendar Query Terms', 'A list of query terms used to generate a calendar.'),
+      response: {
+        200: generateJSONSchemaObject(calendarRSS, 'Calendar', 'A Flavor of the Day calendar in RSS format.'),
+        400: errorHandlerSchemas.HTTP400,
+        404: errorHandlerSchemas.HTTP404,
+        500: errorHandlerSchemas.HTTP500
+      }
+    }
+  }
+}
+
 const calendarJSON: Calendar = {
   items: [
     {

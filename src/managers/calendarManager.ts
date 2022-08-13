@@ -4,7 +4,9 @@ import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import ical from 'ical'
 import icalGenerator, { ICalAlarmType, ICalEventBusyStatus, ICalEventStatus } from 'ical-generator'
+import RSS from 'rss'
 import getUUID from 'uuid-by-string'
+import format from 'xml-formatter'
 import { lookup } from 'zipcode-to-timezone'
 import { getFlavorList, getFlavorInternal } from './flavorManager'
 import { getLocationInternal } from './locationManager'
@@ -194,6 +196,48 @@ export const getCalendarFeed = async (request: FastifyRequest): Promise<CachedAs
   })
   return {
     data: calendar.toString(),
+    expires: calendarData.expires
+  }
+}
+
+/**
+ * Gets a calendar.
+ * @param {FastifyRequest} request - The request instance.
+ * @returns {CachedAsset<string>} - A Flavor of the Day calendar in RSS format.
+ */
+export const getCalendarRSS = async (request: FastifyRequest): Promise<CachedAsset<string>> => {
+  const calendarData = await getCalendarJSON(request)
+  const categories = [
+    'Culver\'s',
+    'Ice Cream',
+    'Flavor of the Day'
+  ]
+  const feed = new RSS({
+    title: 'Culver\'s Flavor of the Day Calendar',
+    description: 'This calendar feed contains all of the Culver\'s Flavor of the Day events for the location(s) and flavor(s) specified.',
+    // eslint-disable-next-line camelcase
+    site_url: `${request.protocol}://${request.hostname}`,
+    // eslint-disable-next-line camelcase
+    feed_url: `${request.protocol}://${request.hostname}${request.url}`,
+    copyright: `${new Date().getFullYear()} Culver's Ice Cream iCal`,
+    language: 'en',
+    categories,
+    ttl: 60 * 60 * 4 // 4 Hours
+  })
+  calendarData.data.items.forEach((calendarItem) => {
+    const date = new Date(calendarItem.date)
+    const timezone = lookup(calendarItem.location.address.postal) ?? 'UTC'
+    feed.item({
+      guid: getUUID(getCacheKeyCalendar(calendarItem.location.id, date.getFullYear(), date.getMonth() + 1, date.getDate())),
+      title: `Culver's Flavor of the Day - ${calendarItem.flavor.name} (${calendarItem.location.address.city} - ${calendarItem.location.address.street})`,
+      description: calendarItem.flavor.description,
+      date: buildCalendarDateOpen(date, calendarItem.location.schedule, timezone),
+      url: calendarItem.location.url,
+      categories
+    })
+  })
+  return {
+    data: format(feed.xml()),
     expires: calendarData.expires
   }
 }

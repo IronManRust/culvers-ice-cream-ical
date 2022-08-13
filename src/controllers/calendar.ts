@@ -1,8 +1,8 @@
 import { FastifyInstance } from 'fastify'
 import { HTTPHeader } from '../constants/httpHeader'
 import { getContentTypeList } from '../enums/contentType'
-import { getCalendarFeed, getCalendarJSON } from '../managers/calendarManager'
-import { RouteCalendarFeed, RouteCalendarJSON } from '../routes/calendar'
+import { getCalendarFeed, getCalendarRSS, getCalendarJSON } from '../managers/calendarManager'
+import { RouteCalendarFeed, RouteCalendarRSS, RouteCalendarJSON } from '../routes/calendar'
 
 /**
  * Registers the controller.
@@ -15,6 +15,15 @@ export const registerCalendarController = (fastifyInstance: FastifyInstance): vo
     response
       .code(RouteCalendarFeed.successCode)
       .header(HTTPHeader.ContentType, getContentTypeList(RouteCalendarFeed.options.schema.produces))
+      .header(HTTPHeader.Expires, value.expires.toUTCString())
+      .send(value.data)
+  })
+  fastifyInstance.get(RouteCalendarRSS.path, RouteCalendarRSS.options, async (request, response) => {
+    const value = await getCalendarRSS(request)
+    // TODO: Add Hypermedia
+    response
+      .code(RouteCalendarRSS.successCode)
+      .header(HTTPHeader.ContentType, getContentTypeList(RouteCalendarRSS.options.schema.produces))
       .header(HTTPHeader.Expires, value.expires.toUTCString())
       .send(value.data)
   })

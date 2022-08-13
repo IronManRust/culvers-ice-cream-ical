@@ -1,7 +1,8 @@
 export enum ContentType {
   iCalendar = 'text/calendar',
   HTML = 'text/html',
-  JSON = 'application/json'
+  JSON = 'application/json',
+  RSS = 'application/rss+xml'
 }
 
 /**
@@ -14,6 +15,7 @@ export const getContentTypeValue = (contentType: ContentType): string => {
     case ContentType.iCalendar:
     case ContentType.HTML:
     case ContentType.JSON:
+    case ContentType.RSS:
       return `${contentType}; charset=utf-8`
     default:
       return ''
