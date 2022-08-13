@@ -26,7 +26,7 @@ export const RouteIndex: Route = {
       description: 'Gets the API landing page.',
       tags: [RouteTag.Information],
       consumes: [ContentType.JSON],
-      produces: [ContentType.HTML],
+      produces: [ContentType.HTML, ContentType.JSON],
       response: {
         200: generateJSONSchemaObject(html, getReasonPhrase(StatusCodes.OK), getReasonPhrase(StatusCodes.OK)),
         400: errorHandlerSchemas.HTTP400,

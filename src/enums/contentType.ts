@@ -2,7 +2,7 @@ export enum ContentType {
   iCalendar = 'text/calendar',
   HTML = 'text/html',
   JSON = 'application/json',
-  RSS = 'application/rss+xml'
+  RSS = 'text/rss'
 }
 
 /**
@@ -31,6 +31,13 @@ export const getContentTypeList = (contentTypes: ContentType[]): string => {
   if (contentTypes.length === 1) {
     return getContentTypeValue(contentTypes[0])
   } else {
-    return ''
+    const filteredContentTypes = contentTypes.filter((x) => {
+      return x !== ContentType.JSON
+    })
+    if (filteredContentTypes.length === 1) {
+      return getContentTypeValue(filteredContentTypes[0])
+    } else {
+      return ''
+    }
   }
 }

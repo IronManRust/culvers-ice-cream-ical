@@ -42,7 +42,7 @@ export const RouteCalendarFeed: Route = {
       description: 'Gets a Flavor of the Day calendar in iCal format.',
       tags: [RouteTag.Calendar],
       consumes: [ContentType.JSON],
-      produces: [ContentType.iCalendar],
+      produces: [ContentType.iCalendar, ContentType.JSON],
       query: generateJSONSchemaObject(calendarQueryFeed, 'Calendar Query Terms', 'A list of query terms used to generate a calendar.'),
       response: {
         200: generateJSONSchemaObject(calendarFeed, 'Calendar', 'A Flavor of the Day calendar in iCal format.'),
@@ -93,7 +93,7 @@ export const RouteCalendarRSS: Route = {
       description: 'Gets a Flavor of the Day calendar in RSS format.',
       tags: [RouteTag.Calendar],
       consumes: [ContentType.JSON],
-      produces: [ContentType.RSS],
+      produces: [ContentType.RSS, ContentType.JSON],
       query: generateJSONSchemaObject(calendarQueryRSS, 'Calendar Query Terms', 'A list of query terms used to generate a calendar.'),
       response: {
         200: generateJSONSchemaObject(calendarRSS, 'Calendar', 'A Flavor of the Day calendar in RSS format.'),
