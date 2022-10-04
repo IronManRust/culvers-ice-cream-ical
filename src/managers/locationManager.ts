@@ -118,49 +118,184 @@ const getLocationScrape = async (logger: FastifyLoggerInstance, locationID: numb
       if (hours) {
         const scheduleList = hours.getElementsByTagName('ul')
         if (scheduleList.length > 0) {
-          const scheduleListItems = scheduleList[0].getElementsByTagName('li')
+          const defaultScheduleDay = {
+            open: '',
+            close: ''
+          }
           schedule = {
-            monday: {
-              open: scheduleListItems[0].childNodes[1].innerText.split(' – ')[0].trim(),
-              close: scheduleListItems[0].childNodes[1].innerText.split(' – ')[1].trim()
-            },
-            tuesday: {
-              open: scheduleListItems[1].childNodes[1].innerText.split(' – ')[0].trim(),
-              close: scheduleListItems[1].childNodes[1].innerText.split(' – ')[1].trim()
-            },
-            wednesday: {
-              open: scheduleListItems[2].childNodes[1].innerText.split(' – ')[0].trim(),
-              close: scheduleListItems[2].childNodes[1].innerText.split(' – ')[1].trim()
-            },
-            thursday: {
-              open: scheduleListItems[3].childNodes[1].innerText.split(' – ')[0].trim(),
-              close: scheduleListItems[3].childNodes[1].innerText.split(' – ')[1].trim()
-            },
-            friday: {
-              open: scheduleListItems[4].childNodes[1].innerText.split(' – ')[0].trim(),
-              close: scheduleListItems[4].childNodes[1].innerText.split(' – ')[1].trim()
-            },
-            saturday: {
-              open: scheduleListItems[5].childNodes[1].innerText.split(' – ')[0].trim(),
-              close: scheduleListItems[5].childNodes[1].innerText.split(' – ')[1].trim()
-            },
-            sunday: {
-              open: scheduleListItems[6].childNodes[1].innerText.split(' – ')[0].trim(),
-              close: scheduleListItems[6].childNodes[1].innerText.split(' – ')[1].trim()
+            monday: defaultScheduleDay,
+            tuesday: defaultScheduleDay,
+            wednesday: defaultScheduleDay,
+            thursday: defaultScheduleDay,
+            friday: defaultScheduleDay,
+            saturday: defaultScheduleDay,
+            sunday: defaultScheduleDay
+          }
+          const scheduleListItems = scheduleList[0].getElementsByTagName('li') // Lobby & Dine-In
+          for (const scheduleListItem of scheduleListItems) {
+            const dateRange = scheduleListItem.childNodes[0].innerText.trim()
+            const scheduleDay = {
+              open: scheduleListItem.childNodes[1].innerText.split(' - ')[0].trim(),
+              close: scheduleListItem.childNodes[1].innerText.split(' - ')[1].trim()
+            }
+            switch (dateRange) {
+              case 'Mon - Sun':
+                schedule.monday = scheduleDay
+                schedule.tuesday = scheduleDay
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                schedule.saturday = scheduleDay
+                schedule.sunday = scheduleDay
+                break
+              case 'Mon - Sat':
+                schedule.monday = scheduleDay
+                schedule.tuesday = scheduleDay
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                schedule.saturday = scheduleDay
+                break
+              case 'Mon - Fri':
+                schedule.monday = scheduleDay
+                schedule.tuesday = scheduleDay
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                break
+              case 'Mon - Thur':
+                schedule.monday = scheduleDay
+                schedule.tuesday = scheduleDay
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                break
+              case 'Mon - Wed':
+                schedule.monday = scheduleDay
+                schedule.tuesday = scheduleDay
+                schedule.wednesday = scheduleDay
+                break
+              case 'Mon - Tues':
+                schedule.monday = scheduleDay
+                schedule.tuesday = scheduleDay
+                break
+              case 'Mon':
+                schedule.monday = scheduleDay
+                break
+              case 'Tues - Sun':
+                schedule.tuesday = scheduleDay
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                schedule.saturday = scheduleDay
+                schedule.sunday = scheduleDay
+                break
+              case 'Tues - Sat':
+                schedule.tuesday = scheduleDay
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                schedule.saturday = scheduleDay
+                break
+              case 'Tues - Fri':
+                schedule.tuesday = scheduleDay
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                break
+              case 'Tues - Thur':
+                schedule.tuesday = scheduleDay
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                break
+              case 'Tues - Wed':
+                schedule.tuesday = scheduleDay
+                schedule.wednesday = scheduleDay
+                break
+              case 'Tues':
+                schedule.tuesday = scheduleDay
+                break
+              case 'Wed - Sun':
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                schedule.saturday = scheduleDay
+                schedule.sunday = scheduleDay
+                break
+              case 'Wed - Sat':
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                schedule.saturday = scheduleDay
+                break
+              case 'Wed - Fri':
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                break
+              case 'Wed - Thur':
+                schedule.wednesday = scheduleDay
+                schedule.thursday = scheduleDay
+                break
+              case 'Wed':
+                schedule.wednesday = scheduleDay
+                break
+              case 'Thur - Sun':
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                schedule.saturday = scheduleDay
+                schedule.sunday = scheduleDay
+                break
+              case 'Thur - Sat':
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                schedule.saturday = scheduleDay
+                break
+              case 'Thur - Fri':
+                schedule.thursday = scheduleDay
+                schedule.friday = scheduleDay
+                break
+              case 'Thur':
+                schedule.thursday = scheduleDay
+                break
+              case 'Fri - Sun':
+                schedule.friday = scheduleDay
+                schedule.saturday = scheduleDay
+                schedule.sunday = scheduleDay
+                break
+              case 'Fri - Sat':
+                schedule.friday = scheduleDay
+                schedule.saturday = scheduleDay
+                break
+              case 'Fri':
+                schedule.friday = scheduleDay
+                break
+              case 'Sat - Sun':
+                schedule.saturday = scheduleDay
+                schedule.sunday = scheduleDay
+                break
+              case 'Sat':
+                schedule.saturday = scheduleDay
+                break
+              case 'Sun':
+                schedule.sunday = scheduleDay
+                break
+              default:
+                break
             }
           }
         }
       }
+      const addressComponents = html.querySelector('.restaurant-address')?.childNodes
       const locationDetail: LocationDetail = {
         id: locationID,
         key: response.request.res.responseUrl.split('/').slice(-1),
         name: unescape(html.getElementsByTagName('h1')[0].innerText.trim()),
         url: response.request.res.responseUrl,
         address: {
-          street: unescape((html.querySelector('.street-address')?.innerText ?? '').trim()),
-          city: unescape((html.querySelector('.locality')?.innerText ?? '').trim()),
-          state: unescape((html.querySelector('.region')?.innerText ?? '').trim()),
-          postal: Number((html.querySelector('.postal-code')?.innerText ?? '').trim()),
+          street: addressComponents ? unescape((addressComponents[1].innerText ?? '').trim()) : '',
+          city: addressComponents ? unescape((addressComponents[5].innerText ?? '').trim()) : '',
+          state: addressComponents ? unescape((addressComponents[7].innerText ?? '').trim()) : '',
+          postal: addressComponents ? Number((addressComponents[9].innerText ?? '').trim()) : 0,
           country: 'US'
         },
         schedule: schedule ?? undefined
