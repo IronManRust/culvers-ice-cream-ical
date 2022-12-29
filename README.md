@@ -1,8 +1,6 @@
 # Culver's Ice Cream iCal
 
-[https://culvers-ice-cream-ical.herokuapp.com](https://culvers-ice-cream-ical.herokuapp.com "Culver's Ice Cream iCal")
-
-![Heroku](https://pyheroku-badge.herokuapp.com/?app=culvers-ice-cream-ical&style=plastic)
+TODO: Hosting Link / Build Badge
 
 ## Introduction
 
