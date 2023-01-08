@@ -77,12 +77,17 @@ export const setupDocumentation = (fastifyInstance: FastifyInstance): void => {
     const spec20 = fastifyInstance.swagger()
     const spec30 = JSON.parse(JSON.stringify(spec20))
     spec30.openapi = '3.0'
-    fs.writeFileSync(`${__dirname}/../spec-2.0.json`, JSON.stringify(spec20), {
-      encoding: 'utf8'
-    })
-    fs.writeFileSync(`${__dirname}/../spec-3.0.json`, JSON.stringify(spec30), {
-      encoding: 'utf8'
-    })
+    try {
+      fs.writeFileSync(`${__dirname}/../spec-2.0.json`, JSON.stringify(spec20), {
+        encoding: 'utf8'
+      })
+      fs.writeFileSync(`${__dirname}/../spec-3.0.json`, JSON.stringify(spec30), {
+        encoding: 'utf8'
+      })
+    } catch {
+      // Do Nothing
+      // TODO: Possibly Do Something
+    }
   })
 
   fastifyInstance.get(RouteIndex.path, RouteIndex.options, (_request, response) => {

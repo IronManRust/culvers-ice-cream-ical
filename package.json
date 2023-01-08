@@ -27,10 +27,11 @@
     "main": "dist/index.js",
     "scripts": {
         "clean": "rimraf coverage dist",
-        "build": "npm run build:static && npm run build:metadata && npm run build:src",
+        "build": "npm run build:static && npm run build:metadata && npm run build:src && npm run build:spec",
         "build:static": "copyfiles -f static/*.* dist",
         "build:metadata": "node package-metadata.js",
         "build:src": "tsc -p tsconfig.json",
+        "build:spec": "node package-spec.js",
         "lint": "eslint . --ext .ts,.tsx",
         "test": "jest --coverage --detectOpenHandles --verbose",
         "start": "node dist/index.js",

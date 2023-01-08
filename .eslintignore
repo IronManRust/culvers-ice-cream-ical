@@ -5,3 +5,4 @@
 /dist/**/*
 
 package-metadata.js
+package-spec.js
