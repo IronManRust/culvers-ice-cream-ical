@@ -28,4 +28,5 @@ Coming Soon!
 * Test Coverage Via Jest
 * `@throws` Annotations
 * SDK Generation / OpenAPI Documentation / Expanded Landing Page
+* [APIs.guru](https://apis.guru) Listing
 * [API Metrics](https://www.moesif.com)
