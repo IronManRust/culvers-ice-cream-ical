@@ -22,7 +22,7 @@ export const generateJSONSchemaObject = (value: unknown, title: string | undefin
   })
   schema.title = title
   schema.description = description
-  // TODO: schema.example = value
+  schema.example = value
   return schema
 }
 

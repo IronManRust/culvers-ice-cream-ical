@@ -1,3 +1,4 @@
+import AJV from 'ajv'
 import Fastify, { FastifyInstance } from 'fastify'
 import fs from 'fs'
 import { getLogger } from './logger'
@@ -27,7 +28,14 @@ export default class Server {
       ajv: {
         customOptions: {
           coerceTypes: 'array'
-        }
+        },
+        plugins: [
+          (ajv: AJV.Ajv) => {
+            ajv.addKeyword('example', {
+              type: 'object'
+            })
+          }
+        ]
       },
       logger: getLogger(loggerOptions)
     })
