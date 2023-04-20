@@ -1,4 +1,4 @@
 export default interface ListenOptions {
-  address: string
+  host: string
   port: number
 }

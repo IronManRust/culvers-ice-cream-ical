@@ -205,7 +205,7 @@
     "jsdoc/check-access": "error",
     "jsdoc/check-alignment": "error",
     "jsdoc/check-examples": [
-      "error",
+      "off",
       {
         "allowInlineConfig": true,
         "captionRequired": true,

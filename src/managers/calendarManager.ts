@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { FastifyLoggerInstance, FastifyRequest } from 'fastify'
+import { FastifyBaseLogger, FastifyRequest } from 'fastify'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import ical from 'ical'
@@ -65,12 +65,12 @@ const setCalendarHeaderCache = (cache: Cache, calendarHeader: CalendarHeader): C
 /**
  * Gets a calendar header by scraping the Culver's website.
  * @param {Cache} cache - The cache object.
- * @param {FastifyLoggerInstance} logger - The logger instance.
+ * @param {FastifyBaseLogger} logger - The logger instance.
  * @param {number} locationID - The ID of the store location.
  * @param {Date} date - The calendar header date.
  * @returns {CalendarHeader} - A calendar header.
  */
-const getCalendarHeaderScrape = async (cache: Cache, logger: FastifyLoggerInstance, locationID: number, date: Date): Promise<CalendarHeader> => {
+const getCalendarHeaderScrape = async (cache: Cache, logger: FastifyBaseLogger, locationID: number, date: Date): Promise<CalendarHeader> => {
   logger.info('scrape calendar header - begin')
   const response = await axios.get(`https://www.culvers.com/fotd-add-to-calendar/${locationID}/${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`)
   if (response.status === StatusCodes.OK) {
@@ -91,11 +91,11 @@ const getCalendarHeaderScrape = async (cache: Cache, logger: FastifyLoggerInstan
 /**
  * Builds a calendar item from a calendar header.
  * @param {Cache} cache - The cache object.
- * @param {FastifyLoggerInstance} logger - The logger instance.
+ * @param {FastifyBaseLogger} logger - The logger instance.
  * @param {CachedAsset<CalendarHeader>} calendarHeader - A calendar header.
  * @returns {CachedAssed<CalendarItem>} - A calendar item.
  */
-const buildCalendarItem = async (cache: Cache, logger: FastifyLoggerInstance, calendarHeader: CachedAsset<CalendarHeader>): Promise<CachedAsset<CalendarItem>> => {
+const buildCalendarItem = async (cache: Cache, logger: FastifyBaseLogger, calendarHeader: CachedAsset<CalendarHeader>): Promise<CachedAsset<CalendarItem>> => {
   const flavor = await getFlavorInternal(cache, logger, calendarHeader.data.flavorKey)
   const location = await getLocationInternal(cache, logger, calendarHeader.data.locationID)
   return {
@@ -171,7 +171,7 @@ export const getCalendarFeed = async (request: FastifyRequest): Promise<CachedAs
     },
     name: 'Culver\'s Flavor of the Day Calendar',
     description: 'This calendar feed contains all of the Culver\'s Flavor of the Day events for the location(s) and flavor(s) specified.',
-    ttl: icalGenerator().ttl(60 * 60 * 4) // 4 Hours
+    ttl: 60 * 60 * 4 // 4 Hours
   })
   calendarData.data.items.forEach((calendarItem) => {
     const date = new Date(calendarItem.date)

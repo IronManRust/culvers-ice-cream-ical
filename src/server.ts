@@ -1,4 +1,5 @@
 import Fastify, { FastifyInstance } from 'fastify'
+import fs from 'fs'
 import { getLogger } from './logger'
 import { setupCaching } from './plugins/caching'
 import { setupDocumentation } from './plugins/documentation'
@@ -19,10 +20,9 @@ export default class Server {
   /**
    * Creates an instance of the Server class.
    * @param {LoggerOptions} loggerOptions - The specified logging options.
-   * @param {CacheOptions} cacheOptions - The specified caching options.
    * @memberof Server
    */
-  public constructor(loggerOptions: LoggerOptions, cacheOptions: CacheOptions) {
+  public constructor(loggerOptions: LoggerOptions) {
     this.#fastifyInstance = Fastify({
       ajv: {
         customOptions: {
@@ -31,11 +31,35 @@ export default class Server {
       },
       logger: getLogger(loggerOptions)
     })
+  }
 
-    setupCaching(this.#fastifyInstance, cacheOptions)
-    setupDocumentation(this.#fastifyInstance)
-    setupErrorHandler(this.#fastifyInstance)
-    setupRouting(this.#fastifyInstance)
+  /**
+   * Initializes the server.
+   * @param {CacheOptions} cacheOptions - The specified caching options.
+   * @memberof Server
+   */
+  public async initialize(cacheOptions: CacheOptions): Promise<void> {
+    await setupCaching(this.#fastifyInstance, cacheOptions)
+    await setupErrorHandler(this.#fastifyInstance)
+    await setupDocumentation(this.#fastifyInstance)
+    await setupRouting(this.#fastifyInstance)
+
+    await this.#fastifyInstance.ready(() => {
+      const spec20 = this.#fastifyInstance.swagger()
+      const spec30 = JSON.parse(JSON.stringify(spec20))
+      spec30.openapi = '3.0'
+      try {
+        fs.writeFileSync(`${__dirname}/spec-2.0.json`, JSON.stringify(spec20), {
+          encoding: 'utf8'
+        })
+        fs.writeFileSync(`${__dirname}/spec-3.0.json`, JSON.stringify(spec30), {
+          encoding: 'utf8'
+        })
+      } catch {
+        // Do Nothing
+        // TODO: Possibly Do Something
+      }
+    })
   }
 
   /**
@@ -46,7 +70,10 @@ export default class Server {
    */
   public listen(listenOptions: ListenOptions): Promise<ListenOptions> {
     return new Promise((resolve, reject) => {
-      this.#fastifyInstance.listen(listenOptions.port, listenOptions.address, (error: Error | null) => {
+      this.#fastifyInstance.listen({
+        host: listenOptions.host,
+        port: listenOptions.port
+      }, (error: Error | null) => {
         if (error) {
           return reject(error)
         } else {

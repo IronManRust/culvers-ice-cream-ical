@@ -29,7 +29,7 @@ export default class Cluster {
         cluster.fork()
       })
     } else {
-      this.initialize(listenOptions, loggerOptions, cacheOptions)
+      Cluster.initialize(listenOptions, loggerOptions, cacheOptions)
     }
   }
 
@@ -40,8 +40,10 @@ export default class Cluster {
    * @param {CacheOptions} cacheOptions - The specified caching options.
    * @memberof Cluster
    */
-  private initialize = async (listenOptions: ListenOptions, loggerOptions: LoggerOptions, cacheOptions: CacheOptions): Promise<void> => {
-    await new Server(loggerOptions, cacheOptions).listen(listenOptions)
+  private static initialize = async (listenOptions: ListenOptions, loggerOptions: LoggerOptions, cacheOptions: CacheOptions): Promise<void> => {
+    const server = new Server(loggerOptions)
+    await server.initialize(cacheOptions)
+    await server.listen(listenOptions)
   }
 
 }

@@ -1,6 +1,7 @@
 import { FastifyInstance, FastifyReply } from 'fastify'
-import FastifyStatic from 'fastify-static'
-import FastifySwagger from 'fastify-swagger'
+import FastifyStatic from '@fastify/static'
+import FastifySwagger from '@fastify/swagger'
+import FastifySwaggerUI from '@fastify/swagger-ui'
 import fs from 'fs'
 import { HTTPHeader } from '../constants/httpHeader'
 import { ContentType, getContentTypeValue } from '../enums/contentType'
@@ -26,11 +27,11 @@ const sendStaticFile = (response: FastifyReply, statusCode: number, contentType:
  * Sets up documentation handling functionality.
  * @param {FastifyInstance} fastifyInstance - The instance of the Fastify runtime to apply the documentation handlers to.
  */
-export const setupDocumentation = (fastifyInstance: FastifyInstance): void => {
+export const setupDocumentation = async (fastifyInstance: FastifyInstance): Promise<void> => {
   const metadata = JSON.parse(fs.readFileSync(`${__dirname}/../metadata.json`, {
     encoding: 'utf8'
   }))
-  fastifyInstance.register(FastifySwagger, {
+  await fastifyInstance.register(FastifySwagger, {
     swagger: {
       info: {
         title: metadata.name || '',
@@ -64,30 +65,47 @@ export const setupDocumentation = (fastifyInstance: FastifyInstance): void => {
           description: getRouteTagDescription(RouteTag.Information)
         }
       ]
-    },
-    exposeRoute: true,
-    routePrefix: '/swagger'
-  })
-
-  fastifyInstance.register(FastifyStatic, {
-    root: `${__dirname}/..`
-  })
-
-  fastifyInstance.ready(() => {
-    const spec20 = fastifyInstance.swagger()
-    const spec30 = JSON.parse(JSON.stringify(spec20))
-    spec30.openapi = '3.0'
-    try {
-      fs.writeFileSync(`${__dirname}/../spec-2.0.json`, JSON.stringify(spec20), {
-        encoding: 'utf8'
-      })
-      fs.writeFileSync(`${__dirname}/../spec-3.0.json`, JSON.stringify(spec30), {
-        encoding: 'utf8'
-      })
-    } catch {
-      // Do Nothing
-      // TODO: Possibly Do Something
     }
+  })
+
+  await fastifyInstance.register(FastifySwaggerUI, {
+    prefix: '/swagger',
+    theme: {
+      title: 'Culver\'s Ice Cream iCal',
+      favicon: [
+        {
+          filename: 'favicon.ico',
+          rel: 'icon',
+          sizes: '16x16',
+          type: 'image/x-icon',
+          content: fs.readFileSync(`${__dirname}/../favicon.ico`)
+        },
+        {
+          filename: 'favicon-16x16.png',
+          rel: 'icon',
+          sizes: '16x16',
+          type: 'image/png',
+          content: fs.readFileSync(`${__dirname}/../favicon-16x16.png`)
+        },
+        {
+          filename: 'favicon-32x32.png',
+          rel: 'icon',
+          sizes: '32x32',
+          type: 'image/png',
+          content: fs.readFileSync(`${__dirname}/../favicon-32x32.png`)
+        }
+      ],
+      js: [/* TODO: UI JS */],
+      css: [/* TODO: UI CSS */]
+    },
+    logo: {
+      type: 'image/png',
+      content: fs.readFileSync(`${__dirname}/../logo.png`)
+    }
+  })
+
+  await fastifyInstance.register(FastifyStatic, {
+    root: `${__dirname}/..`
   })
 
   fastifyInstance.get(RouteIndex.path, RouteIndex.options, (_request, response) => {

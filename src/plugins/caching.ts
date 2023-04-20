@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyLoggerInstance } from 'fastify'
+import { FastifyBaseLogger, FastifyInstance } from 'fastify'
 import NodeCache from 'node-cache'
 import CachedAsset from '../types/cachedAsset'
 import CacheOptions from '../types/cacheOptions'
@@ -12,17 +12,17 @@ export class Cache {
 
   #nodeCache: NodeCache
 
-  #logger: FastifyLoggerInstance
+  #logger: FastifyBaseLogger
 
   #cacheOptions: CacheOptions
 
   /**
    * Creates an instance of the Cache class.
-   * @param {FastifyLoggerInstance} logger - The logger instance.
+   * @param {FastifyBaseLogger} logger - The logger instance.
    * @param {CacheOptions} cacheOptions - The specified caching options.
    * @memberof Cache
    */
-  public constructor(logger: FastifyLoggerInstance, cacheOptions: CacheOptions) {
+  public constructor(logger: FastifyBaseLogger, cacheOptions: CacheOptions) {
     this.#nodeCache = new NodeCache({
       stdTTL: cacheOptions.cacheLength,
       checkperiod: cacheOptions.cleanupLength

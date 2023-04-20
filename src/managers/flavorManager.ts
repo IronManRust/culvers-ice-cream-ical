@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { FastifyLoggerInstance, FastifyRequest } from 'fastify'
+import { FastifyBaseLogger, FastifyRequest } from 'fastify'
 import { unescape } from 'html-escaper'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
@@ -33,10 +33,10 @@ const setFlavorListCache = (cache: Cache, flavorListDetail: FlavorListDetail): C
 
 /**
  * Gets a list of flavors by scraping the Culver's website.
- * @param {FastifyLoggerInstance} logger - The logger instance.
+ * @param {FastifyBaseLogger} logger - The logger instance.
  * @returns {FlavorListDetail} - A list of all available flavors.
  */
-const getFlavorListScrape = async (logger: FastifyLoggerInstance): Promise<FlavorListDetail> => {
+const getFlavorListScrape = async (logger: FastifyBaseLogger): Promise<FlavorListDetail> => {
   logger.info('scrape flavors - begin')
   const response = await axios.get('https://www.culvers.com/flavor-of-the-day')
   if (response.status === StatusCodes.OK) {
@@ -113,11 +113,11 @@ export const getFlavor = async (request: FastifyRequest): Promise<CachedAsset<Fl
 /**
  * Gets a flavor.
  * @param {Cache} cache - The cache object.
- * @param {FastifyLoggerInstance} logger - The logger instance.
+ * @param {FastifyBaseLogger} logger - The logger instance.
  * @param {string} flavorName - The name of the flavor.
  * @returns {FlavorDetail} - Information about the specified flavor.
  */
-export const getFlavorInternal = async (cache: Cache, logger: FastifyLoggerInstance, flavorName: string): Promise<FlavorDetail> => {
+export const getFlavorInternal = async (cache: Cache, logger: FastifyBaseLogger, flavorName: string): Promise<FlavorDetail> => {
   const flavorList = getFlavorListCache(cache) ?? setFlavorListCache(cache, await getFlavorListScrape(logger))
   for (const flavor of flavorList.data.items) {
     if (flavor.name.trim().toLowerCase() === flavorName.trim().toLowerCase()) {

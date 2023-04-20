@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { FastifyLoggerInstance, FastifyRequest } from 'fastify'
+import { FastifyBaseLogger, FastifyRequest } from 'fastify'
 import { unescape } from 'html-escaper'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
@@ -34,11 +34,11 @@ interface LocationListResponse {
 
 /**
  * Gets a list of store locations by querying Culver's address API.
- * @param {FastifyLoggerInstance} logger - The logger instance.
+ * @param {FastifyBaseLogger} logger - The logger instance.
  * @param {string} postal - The postal code to search for.
  * @returns {LocationSummary[]} - A list of store locations.
  */
-const searchLocationListScrape = async (logger: FastifyLoggerInstance, postal: string): Promise<LocationSummary[]> => {
+const searchLocationListScrape = async (logger: FastifyBaseLogger, postal: string): Promise<LocationSummary[]> => {
   logger.info('scrape store location list - begin')
   const response = await axios.get(`https://www.culvers.com/api/locate/address/json?address=${postal}`)
   if (response.status === StatusCodes.OK) {
@@ -103,11 +103,11 @@ const setLocationCache = (cache: Cache, locationDetail: LocationDetail): CachedA
 
 /**
  * Gets a store location by scraping the Culver's website.
- * @param {FastifyLoggerInstance} logger - The logger instance.
+ * @param {FastifyBaseLogger} logger - The logger instance.
  * @param {number} locationID - The ID of the store location.
  * @returns {LocationDetail} - A store location.
  */
-const getLocationScrape = async (logger: FastifyLoggerInstance, locationID: number): Promise<LocationDetail> => {
+const getLocationScrape = async (logger: FastifyBaseLogger, locationID: number): Promise<LocationDetail> => {
   logger.info('scrape store location - begin')
   const response = await axios.get(`https://www.culvers.com/fotd.aspx?storeid=${locationID}`)
   if (response.status === StatusCodes.OK) {
@@ -326,11 +326,11 @@ export const getLocation = async (request: FastifyRequest): Promise<CachedAsset<
 /**
  * Gets a store location.
  * @param {Cache} cache - The cache object.
- * @param {FastifyLoggerInstance} logger - The logger instance.
+ * @param {FastifyBaseLogger} logger - The logger instance.
  * @param {number} locationID - The ID of the store location.
  * @returns {LocationDetail} - Information about the specified store location.
  */
-export const getLocationInternal = async (cache: Cache, logger: FastifyLoggerInstance, locationID: number): Promise<LocationDetail> => {
+export const getLocationInternal = async (cache: Cache, logger: FastifyBaseLogger, locationID: number): Promise<LocationDetail> => {
   const location = getLocationCache(cache, locationID) ?? setLocationCache(cache, await getLocationScrape(logger, locationID))
   return location.data
 }
