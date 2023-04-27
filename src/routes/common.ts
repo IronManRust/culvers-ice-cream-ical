@@ -7,6 +7,7 @@ export const metaData: KeyValuePair[] = [{
   value: 'value'
 }]
 
+// TODO: Use actual hypermedia links to make a more accurate example.
 export const links: Link[] = [{
   title: 'title',
   href: '#',
