@@ -31,6 +31,7 @@ export default class Server {
         },
         plugins: [
           (ajv: AJV.Ajv) => {
+            // TODO: Deal With Deprecation Warning
             ajv.addKeyword('example', {
               type: 'object'
             })

@@ -10,6 +10,7 @@ import format from 'xml-formatter'
 import { lookup } from 'zipcode-to-timezone'
 import { getFlavorList, getFlavorInternal } from './flavorManager'
 import { getLocationInternal } from './locationManager'
+import { HTTPAddress } from '../constants/httpAddress'
 import { getCacheKeyCalendar } from '../functions/cacheKeys'
 import { combineAliasesCalendar } from '../functions/combineAliases'
 import { buildCalendarDateOpen, buildCalendarDateClose } from '../functions/schedule'
@@ -72,7 +73,7 @@ const setCalendarHeaderCache = (cache: Cache, calendarHeader: CalendarHeader): C
  */
 const getCalendarHeaderScrape = async (cache: Cache, logger: FastifyBaseLogger, locationID: number, date: Date): Promise<CalendarHeader> => {
   logger.info('scrape calendar header - begin')
-  const response = await axios.get(`https://www.culvers.com/fotd-add-to-calendar/${locationID}/${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`)
+  const response = await axios.get(`${HTTPAddress.Website}/fotd-add-to-calendar/${locationID}/${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`)
   if (response.status === StatusCodes.OK) {
     const data = ical.parseICS(response.data)
     const event = data[Object.keys(data)[0]]

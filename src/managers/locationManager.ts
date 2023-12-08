@@ -5,6 +5,7 @@ import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import { parse } from 'node-html-parser'
 import postalCodes from 'postal-codes-js'
+import { HTTPAddress } from '../constants/httpAddress'
 import { getCacheKeyLocation } from '../functions/cacheKeys'
 import { combineAliasesLocationList } from '../functions/combineAliases'
 import { Cache } from '../plugins/caching'
@@ -40,7 +41,7 @@ interface LocationListResponse {
  */
 const searchLocationListScrape = async (logger: FastifyBaseLogger, postal: string): Promise<LocationSummary[]> => {
   logger.info('scrape store location list - begin')
-  const response = await axios.get(`https://www.culvers.com/api/locate/address/json?address=${postal}`)
+  const response = await axios.get(`${HTTPAddress.Website}/api/locate/address/json?address=${postal}`)
   if (response.status === StatusCodes.OK) {
     const locationListResponse: LocationListResponse = response.data
     if (!locationListResponse.ErrorCode && !locationListResponse.ErrorMessage) {
@@ -109,9 +110,9 @@ const setLocationCache = (cache: Cache, locationDetail: LocationDetail): CachedA
  */
 const getLocationScrape = async (logger: FastifyBaseLogger, locationID: number): Promise<LocationDetail> => {
   logger.info('scrape store location - begin')
-  const response = await axios.get(`https://www.culvers.com/fotd.aspx?storeid=${locationID}`)
+  const response = await axios.get(`${HTTPAddress.Website}/fotd.aspx?storeid=${locationID}`)
   if (response.status === StatusCodes.OK) {
-    if (response.request.res.responseUrl !== 'https://www.culvers.com/flavor-of-the-day') {
+    if (response.request.res.responseUrl !== `${HTTPAddress.Website}/flavor-of-the-day`) {
       const html = parse(response.data)
       let schedule: Schedule | null = null
       const hours = html.querySelector('.hours')

@@ -4,6 +4,7 @@ import { unescape } from 'html-escaper'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import { parse } from 'node-html-parser'
+import { HTTPAddress } from '../constants/httpAddress'
 import { getCacheKeyFlavors } from '../functions/cacheKeys'
 import { Cache } from '../plugins/caching'
 import CachedAsset from '../types/cachedAsset'
@@ -38,20 +39,32 @@ const setFlavorListCache = (cache: Cache, flavorListDetail: FlavorListDetail): C
  */
 const getFlavorListScrape = async (logger: FastifyBaseLogger): Promise<FlavorListDetail> => {
   logger.info('scrape flavors - begin')
-  const response = await axios.get('https://www.culvers.com/flavor-of-the-day')
+  const response = await axios.get(`${HTTPAddress.Website}/flavor-of-the-day`)
   if (response.status === StatusCodes.OK) {
-    const items = await Promise.all(parse(response.data).querySelectorAll('.ModuleFotdAllFlavors-item')
+    const items = await Promise.all(parse(response.data).querySelectorAll('a[class^=\'FlavorLinkListItem_containerLink\']')
       .map(async (item) => {
-        const flavorURL = `https://www.culvers.com${item.getElementsByTagName('a')[0].getAttribute('href')}`
+        const flavorURL = `${HTTPAddress.Website}${item.getAttribute('href')}`
         const responseDescription = await axios.get(flavorURL)
-        const flavorDetail: FlavorDetail = {
-          key: (item.getElementsByTagName('a')[0].getAttribute('href') ?? '').replace('/flavor-of-the-day/', ''),
-          name: unescape(item.getElementsByTagName('strong')[0].innerText),
-          flavorURL,
-          imageURL: `https:${item.getElementsByTagName('img')[0].getAttribute('src')}`,
-          description: responseDescription.status === StatusCodes.OK ? unescape(parse(responseDescription.data).querySelectorAll('.ModuleFotdDetail-description')[0].getElementsByTagName('p')[0].innerText) : ''
+        if (responseDescription.status === StatusCodes.OK) {
+          const responseBody = parse(responseDescription.data)
+          const flavorDetail: FlavorDetail = {
+            key: (flavorURL ?? '').replace(`${HTTPAddress.Website}/flavor-of-the-day/`, '').toLowerCase(),
+            name: unescape(responseBody.getElementsByTagName('h1')[0].innerHTML),
+            flavorURL,
+            imageURL: unescape(responseBody.querySelectorAll('div[class^=\'FlavorOfTheDayDetails_containerPrimary\'] > img:first-of-type')[0].getAttribute('src') ?? ''),
+            description: unescape(responseBody.querySelectorAll('div[class^=\'FlavorOfTheDayDetails_containerPrimaryContentDescription\']')[0].innerHTML)
+          }
+          return flavorDetail
+        } else {
+          const flavorDetail: FlavorDetail = {
+            key: (flavorURL ?? '').replace(`${HTTPAddress.Website}/flavor-of-the-day/`, '').toLowerCase(),
+            name: '',
+            flavorURL,
+            imageURL: '',
+            description: ''
+          }
+          return flavorDetail
         }
-        return flavorDetail
       }))
     logger.info('scrape flavors - success')
     return {
