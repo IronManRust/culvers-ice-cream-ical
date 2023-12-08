@@ -28,7 +28,8 @@
     "scripts": {
         "generate-location-mapping": "node data/locationMapping.js",
         "clean": "rimraf coverage dist",
-        "build": "npm run build:static && npm run build:metadata && npm run build:src && npm run build:spec",
+        "build": "npm run build:data && npm run build:static && npm run build:metadata && npm run build:src && npm run build:spec",
+        "build:data": "copyfiles -f data/locationMapping.json dist",
         "build:static": "copyfiles -f static/*.* dist",
         "build:metadata": "node package-metadata.js",
         "build:src": "tsc -p tsconfig.json",
