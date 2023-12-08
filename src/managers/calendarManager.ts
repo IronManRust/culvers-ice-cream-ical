@@ -73,6 +73,7 @@ const setCalendarHeaderCache = (cache: Cache, calendarHeader: CalendarHeader): C
  */
 const getCalendarHeaderScrape = async (cache: Cache, logger: FastifyBaseLogger, locationID: number, date: Date): Promise<CalendarHeader> => {
   logger.info('scrape calendar header - begin')
+  // TODO: Update Calendar Scraping
   const response = await axios.get(`${HTTPAddress.Website}/fotd-add-to-calendar/${locationID}/${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`)
   if (response.status === StatusCodes.OK) {
     const data = ical.parseICS(response.data)
