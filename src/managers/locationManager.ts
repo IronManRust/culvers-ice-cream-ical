@@ -22,14 +22,71 @@ import Schedule from '../types/schedule'
  * This is not a complete interface, and only includes the desired data points.
  */
 interface LocationListResponse {
-  ErrorCode: number | undefined
-  ErrorMessage: number | undefined
-  Collection: {
-    Locations: {
-      Name: string
-      Id: number
-      Url: string
+  isSuccessful: boolean
+  data: {
+    meta: {
+      code: number
+    }
+    geofences: {
+      _id: string
+      live: boolean
+      description: string
+      metadata: {
+        dineInHours: string
+        driveThruHours: string
+        onlineOrderStatus: number
+        flavorOfDayName: string
+        flavorOfDaySlug: string
+        openDate: string
+        isTemporarilyClosed: boolean
+        utcOffset: number
+        street: string
+        state: string
+        city: string
+        postalCode: string
+        oloId: string
+        slug: string
+        jobsearchurl: string
+        handoffOptions: string
+      }
+      tag: string
+      externalId: string
+      type: string
+      geometryCenter: {
+        type: string
+        coordinates: number[]
+      }
+      geometryRadius: number
+      geometry: {
+        type: string
+        coordinates: number[][][]
+      }
+      enabled: boolean
     }[]
+    totalResults: number
+    address: {
+      latitude: number
+      longitude: number
+      geometry: {
+        type: string
+        coordinates: number[]
+      }
+      country: string
+      countryCode: string
+      countryFlag: string
+      county: string
+      distance: number
+      confidence: string
+      borough: string
+      city: string
+      neighborhood: string
+      postalCode: string
+      stateCode: string
+      state: string
+      layer: string
+      formattedAddress: string
+      addressLabel: string
+    }
   }
 }
 
@@ -41,16 +98,16 @@ interface LocationListResponse {
  */
 const searchLocationListScrape = async (logger: FastifyBaseLogger, postal: string): Promise<LocationSummary[]> => {
   logger.info('scrape store location list - begin')
-  const response = await axios.get(`${HTTPAddress.Website}/api/locate/address/json?address=${postal}`)
+  const response = await axios.get(`${HTTPAddress.Website}/api/restaurants/getLocations?limit=10&location=${postal}`)
   if (response.status === StatusCodes.OK) {
     const locationListResponse: LocationListResponse = response.data
-    if (!locationListResponse.ErrorCode && !locationListResponse.ErrorMessage) {
-      const locationSummaryList: LocationSummary[] = locationListResponse.Collection.Locations.map((x) => {
+    if (locationListResponse.isSuccessful) {
+      const locationSummaryList: LocationSummary[] = locationListResponse.data.geofences.map((x) => {
         return {
-          id: x.Id,
-          key: x.Url.split('/')[x.Url.split('/').length - 1],
-          name: unescape(x.Name),
-          url: x.Url
+          id: parseInt(x.externalId, 10),
+          key: x.metadata.slug,
+          name: unescape(x.description),
+          url: `${HTTPAddress.Website}/restaurants/${x.metadata.slug}`
         }
       })
       logger.info('scrape store location list - success')
