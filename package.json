@@ -26,6 +26,7 @@
     },
     "main": "dist/index.js",
     "scripts": {
+        "generate-location-mapping": "node data/locationMapping.js",
         "clean": "rimraf coverage dist",
         "build": "npm run build:static && npm run build:metadata && npm run build:src && npm run build:spec",
         "build:static": "copyfiles -f static/*.* dist",

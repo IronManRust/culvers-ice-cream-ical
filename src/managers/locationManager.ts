@@ -166,6 +166,7 @@ const setLocationCache = (cache: Cache, locationDetail: LocationDetail): CachedA
  * @returns {LocationDetail} - A store location.
  */
 const getLocationScrape = async (logger: FastifyBaseLogger, locationID: number): Promise<LocationDetail> => {
+  // TODO: https://www.culvers.com/api/restaurants/getDetails?slug=<location-key>
   logger.info('scrape store location - begin')
   const response = await axios.get(`${HTTPAddress.Website}/fotd.aspx?storeid=${locationID}`)
   if (response.status === StatusCodes.OK) {

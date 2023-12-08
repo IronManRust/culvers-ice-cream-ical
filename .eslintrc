@@ -9,6 +9,9 @@
     "project": "tsconfig.json",
     "sourceType": "module"
   },
+  "ignorePatterns": [
+    "data"
+  ],
   "plugins": [
     "@typescript-eslint",
     "jest",
