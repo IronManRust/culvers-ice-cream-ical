@@ -163,7 +163,7 @@ interface LocationResponse {
  * @param {number} locationID - The ID of the store location.
  * @returns {string} - The key of the store location.
  */
-const mapLocationIDToKey = (locationID: number): string => {
+export const mapLocationIDToKey = (locationID: number): string => {
   return locationMapping[locationID.toString()]
 }
 

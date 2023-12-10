@@ -2,14 +2,14 @@ import axios from 'axios'
 import { FastifyBaseLogger, FastifyRequest } from 'fastify'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
-import ical from 'ical'
 import icalGenerator, { ICalAlarmType, ICalEventBusyStatus, ICalEventStatus } from 'ical-generator'
+import { parse } from 'node-html-parser'
 import RSS from 'rss'
 import getUUID from 'uuid-by-string'
 import format from 'xml-formatter'
 import { lookup } from 'zipcode-to-timezone'
 import { getFlavorList, getFlavorInternal } from './flavorManager'
-import { getLocationInternal } from './locationManager'
+import { getLocationInternal, mapLocationIDToKey } from './locationManager'
 import { HTTPAddress } from '../constants/httpAddress'
 import { getCacheKeyCalendar } from '../functions/cacheKeys'
 import { combineAliasesCalendar } from '../functions/combineAliases'
@@ -20,6 +20,27 @@ import Calendar from '../types/calendar'
 import CalendarHeader from '../types/calendarHeader'
 import CalendarItem from '../types/calendarItem'
 import CalendarQuery from '../types/calendarQuery'
+
+/**
+ * The JSON object powering the Culver's calendar page widget.
+ */
+interface CalendarResponse {
+  props: {
+    pageProps: {
+      page: {
+        customData: {
+          restaurantCalendar: {
+            flavors: {
+              onDate: string
+              title: string
+              urlSlug: string
+            }[]
+          }
+        }
+      }
+    }
+  }
+}
 
 /**
  * Gets the dates for the current and next month.
@@ -73,20 +94,30 @@ const setCalendarHeaderCache = (cache: Cache, calendarHeader: CalendarHeader): C
  */
 const getCalendarHeaderScrape = async (cache: Cache, logger: FastifyBaseLogger, locationID: number, date: Date): Promise<CalendarHeader> => {
   logger.info('scrape calendar header - begin')
-  // TODO: Update Calendar Scraping
-  const response = await axios.get(`${HTTPAddress.Website}/fotd-add-to-calendar/${locationID}/${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`)
-  if (response.status === StatusCodes.OK) {
-    const data = ical.parseICS(response.data)
-    const event = data[Object.keys(data)[0]]
-    logger.info('scrape calendar header - success')
-    return {
-      date: date.toLocaleDateString(),
-      flavorKey: event.summary ?? '',
-      locationID
+  const locationKey = mapLocationIDToKey(locationID)
+  if (locationKey) {
+    const response = await axios.get(`${HTTPAddress.Website}/restaurants/${locationKey}`)
+    if (response.status === StatusCodes.OK) {
+      const calendarResponse: CalendarResponse = JSON.parse(parse(response.data).getElementById('__NEXT_DATA__').innerText)
+      for (const flavor of calendarResponse.props.pageProps.page.customData.restaurantCalendar.flavors) {
+        if (new Date(flavor.onDate).toISOString() === date.toISOString()) {
+          logger.info('scrape calendar header - success')
+          return {
+            date: date.toLocaleDateString(),
+            flavorKey: flavor.title,
+            locationID
+          }
+        }
+      }
+      logger.info('scrape calendar header - failure')
+      throw new httpErrors.InternalServerError('Unable to retrieve calendar header data.')
+    } else {
+      logger.info('scrape calendar header - failure')
+      throw new httpErrors.NotFound('Unable to retrieve store location data.')
     }
   } else {
     logger.info('scrape calendar header - failure')
-    throw new httpErrors.InternalServerError('Unable to retrieve calendar header data.')
+    throw new httpErrors.NotFound('Unable to retrieve store location data.')
   }
 }
 

@@ -49,7 +49,9 @@ const getFlavorListScrape = async (logger: FastifyBaseLogger): Promise<FlavorLis
           const responseBody = parse(responseDescription.data)
           const flavorDetail: FlavorDetail = {
             key: (flavorURL ?? '').replace(`${HTTPAddress.Website}/flavor-of-the-day/`, '').toLowerCase(),
-            name: unescape(responseBody.getElementsByTagName('h1')[0].innerHTML),
+            name: unescape(responseBody.getElementsByTagName('h1')[0].innerHTML
+              .replace('’', '\''))
+              .replace('&#x27;', '\''),
             flavorURL,
             imageURL: unescape(responseBody.querySelectorAll('div[class^=\'FlavorOfTheDayDetails_containerPrimary\'] > img:first-of-type')[0].getAttribute('src') ?? ''),
             description: unescape(responseBody.querySelectorAll('div[class^=\'FlavorOfTheDayDetails_containerPrimaryContentDescription\']')[0].innerHTML)
