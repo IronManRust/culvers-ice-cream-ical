@@ -16,7 +16,7 @@ This tool bridges that gap. It offers an [OpenAPI](https://www.openapis.org "Ope
 * Search for flavors, and get details about a specific one.
 * Generate an iCal feed for one or more store locations, and optionally filter by flavor(s).
 
-This tool is not endorsed by, or associated with, Culver's in any way. It makes use of publically available data, and caches that data to be a good network citizen. I, and my wife, are just fans of Culver's ice cream. 😍🍨🍦
+This tool is not endorsed by, or associated with, Culver's in any way. It makes use of publicly-available data, and caches that data to be a good network citizen. I, and my wife, are just fans of Culver's ice cream. 😍🍨🍦
 
 ## Example Usage
 
