@@ -1,6 +1,6 @@
 # Culver's Ice Cream iCal
 
-[https://culvers-ice-cream-ical.cyclic.app](https://culvers-ice-cream-ical.cyclic.app)
+[https://culvers-ice-cream-ical.onrender.com](https://culvers-ice-cream-ical.onrender.com)
 
 ## Introduction
 
