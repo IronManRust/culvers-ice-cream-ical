@@ -175,7 +175,7 @@ export const mapLocationIDToKey = (locationID: number): string => {
  */
 const searchLocationListScrape = async (logger: FastifyBaseLogger, postal: string): Promise<LocationSummary[]> => {
   logger.info('scrape store location list - begin')
-  const response = await axios.get(`${HTTPAddress.Website}/api/restaurants/getLocations?limit=10&location=${postal}`)
+  const response = await axios.get(`${HTTPAddress.Website}/api/locator/getLocations?limit=10&radius=40233&location=${postal}`)
   if (response.status === StatusCodes.OK) {
     const locationListResponse: LocationListResponse = response.data
     if (locationListResponse.isSuccessful) {
