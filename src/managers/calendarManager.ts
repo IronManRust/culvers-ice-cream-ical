@@ -4,6 +4,7 @@ import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import icalGenerator, { ICalAlarmType, ICalEventBusyStatus, ICalEventStatus } from 'ical-generator'
 import { parse } from 'node-html-parser'
+import pRetry from 'p-retry'
 import RSS from 'rss'
 import getUUID from 'uuid-by-string'
 import format from 'xml-formatter'
@@ -11,6 +12,7 @@ import { lookup } from 'zipcode-to-timezone'
 import { getFlavorList, getFlavorInternal } from './flavorManager'
 import { getLocationInternal, mapLocationIDToKey } from './locationManager'
 import { HTTPAddress } from '../constants/httpAddress'
+import { RetryOptions } from '../constants/retryOptions'
 import { getCacheKeyCalendar } from '../functions/cacheKeys'
 import { combineAliasesCalendar } from '../functions/combineAliases'
 import { buildCalendarDateOpen, buildCalendarDateClose } from '../functions/schedule'
@@ -159,7 +161,7 @@ export const getCalendarJSON = async (request: FastifyRequest): Promise<CachedAs
     }
     const locationCalendarItems = await Promise.all(dates.map(async (date) => {
       try {
-        return buildCalendarItem(request.cache, request.log, getCalendarHeaderCache(request.cache, locationID, date) ?? setCalendarHeaderCache(request.cache, await getCalendarHeaderScrape(request.cache, request.log, locationID, date)))
+        return buildCalendarItem(request.cache, request.log, getCalendarHeaderCache(request.cache, locationID, date) ?? setCalendarHeaderCache(request.cache, await pRetry(() => { return getCalendarHeaderScrape(request.cache, request.log, locationID, date) }, RetryOptions)))
       } catch {
         return null // Skip Cache Miss Followed By Failed Calendar Header Scrape
       }

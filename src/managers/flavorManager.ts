@@ -4,7 +4,9 @@ import { unescape } from 'html-escaper'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import { parse } from 'node-html-parser'
+import pRetry from 'p-retry'
 import { HTTPAddress } from '../constants/httpAddress'
+import { RetryOptions } from '../constants/retryOptions'
 import { getCacheKeyFlavors } from '../functions/cacheKeys'
 import { Cache } from '../plugins/caching'
 import CachedAsset from '../types/cachedAsset'
@@ -84,7 +86,7 @@ const getFlavorListScrape = async (logger: FastifyBaseLogger): Promise<FlavorLis
  * @returns {CachedAsset<FlavorListSummary>} - A list of all available flavors.
  */
 export const getFlavorList = async (request: FastifyRequest): Promise<CachedAsset<FlavorListSummary>> => {
-  const flavorList = getFlavorListCache(request.cache) ?? setFlavorListCache(request.cache, await getFlavorListScrape(request.log))
+  const flavorList = getFlavorListCache(request.cache) ?? setFlavorListCache(request.cache, await pRetry(() => { return getFlavorListScrape(request.log) }, RetryOptions))
 
   return {
     data: {
@@ -110,7 +112,7 @@ export const getFlavor = async (request: FastifyRequest): Promise<CachedAsset<Fl
     throw new httpErrors.BadRequest('No flavor key specified.')
   }
 
-  const flavorList = getFlavorListCache(request.cache) ?? setFlavorListCache(request.cache, await getFlavorListScrape(request.log))
+  const flavorList = getFlavorListCache(request.cache) ?? setFlavorListCache(request.cache, await pRetry(() => { return getFlavorListScrape(request.log) }, RetryOptions))
 
   const matchingFlavors = flavorList.data.items.filter((x) => {
     return x.key.trim().toLowerCase() === flavorParams.key.trim().toLowerCase()
@@ -133,7 +135,7 @@ export const getFlavor = async (request: FastifyRequest): Promise<CachedAsset<Fl
  * @returns {FlavorDetail} - Information about the specified flavor.
  */
 export const getFlavorInternal = async (cache: Cache, logger: FastifyBaseLogger, flavorName: string): Promise<FlavorDetail> => {
-  const flavorList = getFlavorListCache(cache) ?? setFlavorListCache(cache, await getFlavorListScrape(logger))
+  const flavorList = getFlavorListCache(cache) ?? setFlavorListCache(cache, await pRetry(() => { return getFlavorListScrape(logger) }, RetryOptions))
   for (const flavor of flavorList.data.items) {
     if (flavor.name.trim().toLowerCase() === flavorName.trim().toLowerCase()) {
       return flavor

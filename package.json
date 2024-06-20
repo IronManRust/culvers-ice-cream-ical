@@ -78,6 +78,7 @@
         "ical-generator": "^4.0.0",
         "node-cache": "^5.1.2",
         "node-html-parser": "^6.1.5",
+        "p-retry": "^4.6.2",
         "pino": "^8.11.0",
         "pino-pretty": "^10.0.0",
         "postal-codes-js": "^2.5.2",

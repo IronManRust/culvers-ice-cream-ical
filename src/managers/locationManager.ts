@@ -4,8 +4,10 @@ import fs from 'fs'
 import { unescape } from 'html-escaper'
 import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
+import pRetry from 'p-retry'
 import postalCodes from 'postal-codes-js'
 import { HTTPAddress } from '../constants/httpAddress'
+import { RetryOptions } from '../constants/retryOptions'
 import { getCacheKeyLocation } from '../functions/cacheKeys'
 import { combineAliasesLocationList } from '../functions/combineAliases'
 import { Cache } from '../plugins/caching'
@@ -210,7 +212,7 @@ export const searchLocationList = async (request: FastifyRequest): Promise<Locat
     throw new httpErrors.BadRequest('Invalid postal code.')
   }
 
-  const locationList = await searchLocationListScrape(request.log, locationListQuery.postal)
+  const locationList = await pRetry(() => { return searchLocationListScrape(request.log, locationListQuery.postal) }, RetryOptions)
   return {
     items: locationList
   }
@@ -311,7 +313,7 @@ const getLocationScrape = async (logger: FastifyBaseLogger, locationID: number):
  */
 export const getLocation = async (request: FastifyRequest): Promise<CachedAsset<LocationDetail>> => {
   const locationParams = request.params as LocationParams
-  const location = getLocationCache(request.cache, locationParams.id) ?? setLocationCache(request.cache, await getLocationScrape(request.log, locationParams.id))
+  const location = getLocationCache(request.cache, locationParams.id) ?? setLocationCache(request.cache, await pRetry(() => { return getLocationScrape(request.log, locationParams.id) }, RetryOptions))
   return location
 }
 
@@ -323,6 +325,6 @@ export const getLocation = async (request: FastifyRequest): Promise<CachedAsset<
  * @returns {LocationDetail} - Information about the specified store location.
  */
 export const getLocationInternal = async (cache: Cache, logger: FastifyBaseLogger, locationID: number): Promise<LocationDetail> => {
-  const location = getLocationCache(cache, locationID) ?? setLocationCache(cache, await getLocationScrape(logger, locationID))
+  const location = getLocationCache(cache, locationID) ?? setLocationCache(cache, await pRetry(() => { return getLocationScrape(logger, locationID) }, RetryOptions))
   return location.data
 }
