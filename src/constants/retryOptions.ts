@@ -11,5 +11,5 @@ export const RetryOptions: Options = {
   /**
    * The number of retry attempts to make.
    */
-  retries: 4
+  retries: 10
 }
