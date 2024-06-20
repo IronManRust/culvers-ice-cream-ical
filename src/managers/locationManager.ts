@@ -246,7 +246,7 @@ const getLocationScrape = async (logger: FastifyBaseLogger, locationID: number):
   logger.info('scrape store location - begin')
   const locationKey = mapLocationIDToKey(locationID)
   if (locationKey) {
-    const response = await axios.get(`https://www.culvers.com/api/restaurants/getDetails?slug=${locationKey}`)
+    const response = await axios.get(`${HTTPAddress.Website}/api/restaurants/getDetails?slug=${locationKey}`)
     if (response.status === StatusCodes.OK) {
       const locationResponse: LocationResponse = response.data
       const locationDetail: LocationDetail = {
