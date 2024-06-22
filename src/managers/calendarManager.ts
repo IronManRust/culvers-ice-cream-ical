@@ -4,6 +4,7 @@ import httpErrors from 'http-errors'
 import { StatusCodes } from 'http-status-codes'
 import icalGenerator, { ICalAlarmType, ICalEventBusyStatus, ICalEventStatus } from 'ical-generator'
 import { parse } from 'node-html-parser'
+import pAll from 'p-all'
 import pRetry from 'p-retry'
 import RSS from 'rss'
 import getUUID from 'uuid-by-string'
@@ -12,6 +13,7 @@ import { lookup } from 'zipcode-to-timezone'
 import { getFlavorList, getFlavorInternal } from './flavorManager'
 import { getLocationInternal, mapLocationIDToKey } from './locationManager'
 import { HTTPAddress } from '../constants/httpAddress'
+import { LimitOptions } from '../constants/limitOptions'
 import { RetryOptions } from '../constants/retryOptions'
 import { getCacheKeyCalendar } from '../functions/cacheKeys'
 import { combineAliasesCalendar } from '../functions/combineAliases'
@@ -153,21 +155,25 @@ export const getCalendarJSON = async (request: FastifyRequest): Promise<CachedAs
   const calendarItems: CalendarItem[] = []
   const dates = getDatesThisMonthAndNext()
   await getFlavorList(request) // Ensure Flavors Are Pre-Cached
-  const locationCalendarItemsList = await Promise.all(calendarQuery.locationID.map(async (locationID) => {
-    try {
-      await getLocationInternal(request.cache, request.log, locationID) // Ensure Location Is Pre-Cached
-    } catch {
-      return [] // Skip Invalid Locations
-    }
-    const locationCalendarItems = await Promise.all(dates.map(async (date) => {
+  const locationCalendarItemsList = await pAll(calendarQuery.locationID.map((locationID) => {
+    return async () => {
       try {
-        return buildCalendarItem(request.cache, request.log, getCalendarHeaderCache(request.cache, locationID, date) ?? setCalendarHeaderCache(request.cache, await pRetry(() => { return getCalendarHeaderScrape(request.cache, request.log, locationID, date) }, RetryOptions)))
+        await getLocationInternal(request.cache, request.log, locationID) // Ensure Location Is Pre-Cached
       } catch {
-        return null // Skip Cache Miss Followed By Failed Calendar Header Scrape
+        return [] // Skip Invalid Locations
       }
-    }))
-    return locationCalendarItems
-  }))
+      const locationCalendarItems = await pAll(dates.map((date) => {
+        return async () => {
+          try {
+            return buildCalendarItem(request.cache, request.log, getCalendarHeaderCache(request.cache, locationID, date) ?? setCalendarHeaderCache(request.cache, await pRetry(() => { return getCalendarHeaderScrape(request.cache, request.log, locationID, date) }, RetryOptions)))
+          } catch {
+            return null // Skip Cache Miss Followed By Failed Calendar Header Scrape
+          }
+        }
+      }), LimitOptions)
+      return locationCalendarItems
+    }
+  }), LimitOptions)
   for (const locationCalendarItems of locationCalendarItemsList) {
     for (const locationCalendarItem of locationCalendarItems) {
       if (locationCalendarItem !== null) {
