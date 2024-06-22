@@ -16,8 +16,8 @@ const loggerOptions: LoggerOptions = {
 }
 
 const cacheOptions: CacheOptions = {
-  cacheLength: 300,
-  cleanupLength: 300
+  cacheLength: 3600,
+  cleanupLength: 3600
 }
 
 const logger = getLogger(loggerOptions)
