@@ -13,6 +13,7 @@ import { lookup } from 'zipcode-to-timezone'
 import { getFlavorList, getFlavorInternal } from './flavorManager'
 import { getLocationInternal, mapLocationIDToKey } from './locationManager'
 import { HTTPAddress } from '../constants/httpAddress'
+import { HTTPCacheOptions } from '../constants/httpCacheOptions'
 import { LimitOptions } from '../constants/limitOptions'
 import { RetryOptions } from '../constants/retryOptions'
 import { getCacheKeyCalendar } from '../functions/cacheKeys'
@@ -174,9 +175,13 @@ export const getCalendarJSON = async (request: FastifyRequest): Promise<CachedAs
       return locationCalendarItems
     }
   }), LimitOptions)
+  let expires = HTTPCacheOptions.expires
   for (const locationCalendarItems of locationCalendarItemsList) {
     for (const locationCalendarItem of locationCalendarItems) {
       if (locationCalendarItem !== null) {
+        if (locationCalendarItem.expires < expires) {
+          expires = locationCalendarItem.expires // Use Earliest Expiration
+        }
         if (calendarQuery.flavorKey.length > 0) {
           for (const flavorKey of calendarQuery.flavorKey) {
             if (flavorKey.trim().toLowerCase() === locationCalendarItem.data.flavor.key.trim().toLowerCase()) {
@@ -193,7 +198,7 @@ export const getCalendarJSON = async (request: FastifyRequest): Promise<CachedAs
     data: {
       items: calendarItems
     },
-    expires: new Date() // TODO: Newest Expiration
+    expires
   }
 }
 
@@ -212,7 +217,7 @@ export const getCalendarFeed = async (request: FastifyRequest): Promise<CachedAs
     },
     name: 'Culver\'s Flavor of the Day Calendar',
     description: 'This calendar feed contains all of the Culver\'s Flavor of the Day events for the location(s) and flavor(s) specified.',
-    ttl: 60 * 60 * 4 // 4 Hours
+    ttl: HTTPCacheOptions.ttl
   })
   calendarData.data.items.forEach((calendarItem) => {
     const date = new Date(calendarItem.date)
@@ -263,7 +268,7 @@ export const getCalendarRSS = async (request: FastifyRequest): Promise<CachedAss
     copyright: `${new Date().getFullYear()} Culver's Ice Cream iCal`,
     language: 'en',
     categories,
-    ttl: 60 * 60 * 4 // 4 Hours
+    ttl: HTTPCacheOptions.ttl
   })
   calendarData.data.items.forEach((calendarItem) => {
     const date = new Date(calendarItem.date)
