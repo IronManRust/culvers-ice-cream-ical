@@ -38,7 +38,7 @@ export default class Server {
           }
         ]
       },
-      logger: getLogger(loggerOptions)
+      loggerInstance: getLogger(loggerOptions)
     })
   }
 

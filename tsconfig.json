@@ -26,7 +26,6 @@
     "jsxFactory": "React.createElement",
     "listEmittedFiles": false,
     "listFiles": false,
-    "locale": "en-us",
     "module": "commonjs",
     "moduleResolution": "node",
     "newLine": "lf",

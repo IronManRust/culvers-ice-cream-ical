@@ -1,5 +1,4 @@
 const spawn = require('child_process').spawn
-const fs = require('fs')
 
 // This script spins up the Fastify server to cause it to write the `spec-2.0.json` and `spec-3.0.json` files to disk, then shuts the server down.
 

@@ -103,14 +103,17 @@ const getCalendarHeaderScrape = async (cache: Cache, logger: FastifyBaseLogger, 
   if (locationKey) {
     const response = await axios.get(`${HTTPAddress.Website}/restaurants/${locationKey}`)
     if (response.status === StatusCodes.OK) {
-      const calendarResponse: CalendarResponse = JSON.parse(parse(response.data).getElementById('__NEXT_DATA__').innerText)
-      for (const flavor of calendarResponse.props.pageProps.page.customData.restaurantCalendar.flavors) {
-        if (new Date(flavor.onDate).toISOString() === date.toISOString()) {
-          logger.info('scrape calendar header - success')
-          return {
-            date: date.toLocaleDateString(),
-            flavorKey: flavor.title,
-            locationID
+      const element = parse(response.data).getElementById('__NEXT_DATA__')
+      if (element) {
+        const calendarResponse: CalendarResponse = JSON.parse(element.innerText)
+        for (const flavor of calendarResponse.props.pageProps.page.customData.restaurantCalendar.flavors) {
+          if (new Date(flavor.onDate).toISOString() === date.toISOString()) {
+            logger.info('scrape calendar header - success')
+            return {
+              date: date.toLocaleDateString(),
+              flavorKey: flavor.title,
+              locationID
+            }
           }
         }
       }

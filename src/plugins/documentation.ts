@@ -69,7 +69,7 @@ export const setupDocumentation = async (fastifyInstance: FastifyInstance): Prom
   })
 
   await fastifyInstance.register(FastifySwaggerUI, {
-    prefix: '/swagger',
+    routePrefix: '/swagger',
     theme: {
       title: 'Culver\'s Ice Cream iCal',
       favicon: [

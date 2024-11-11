@@ -1,5 +1,5 @@
-import { FastifyRequest, FastifyReply } from 'fastify'
-import pino, { Logger } from 'pino'
+import { FastifyRequest, FastifyReply, FastifyBaseLogger } from 'fastify'
+import pino from 'pino'
 import LoggerOptions from './types/loggerOptions'
 import LogReply from './types/logReply'
 import LogRequest from './types/logRequest'
@@ -7,9 +7,9 @@ import LogRequest from './types/logRequest'
 /**
  * Gets a Logger instance with the specified options.
  * @param {LoggerOptions} loggerOptions - The specified logging options.
- * @returns {Logger} - A Logger instance.
+ * @returns {FastifyBaseLogger} - A Logger instance.
  */
-export const getLogger = (loggerOptions: LoggerOptions): Logger => {
+export const getLogger = (loggerOptions: LoggerOptions): FastifyBaseLogger => {
   const serializers = {
     /**
      * Creates a message for logging.

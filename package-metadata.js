@@ -1,16 +1,16 @@
 const fs = require('fs')
 
-const package = JSON.parse(fs.readFileSync('./package.json', {
+const packageJSON = JSON.parse(fs.readFileSync('./package.json', {
   encoding: 'utf8'
 }))
 const metadata = {
-  name: package.name,
-  description: package.description,
-  version: package.version,
-  contactName: package.author.name,
-  contactEmail: package.author.email,
-  contactURL: package.author.url,
-  license: package.license,
+  name: packageJSON.name,
+  description: packageJSON.description,
+  version: packageJSON.version,
+  contactName: packageJSON.author.name,
+  contactEmail: packageJSON.author.email,
+  contactURL: packageJSON.author.url,
+  license: packageJSON.license,
   timestamp: Date.now()
 }
 
