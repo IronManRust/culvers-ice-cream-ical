@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "binaries": "off",
+    "classMembers": "off",
+    "dependencies": "off",
+    "duplicates": "off",
+    "enumMembers": "off",
+    "exports": "off",
+    "files": "off",
+    "nsExports": "off",
+    "nsTypes": "off",
+    "types": "off",
+    "unlisted": "off",
+    "unresolved": "off"
+  }
+}

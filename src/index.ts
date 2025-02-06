@@ -4,7 +4,7 @@ import CacheOptions from './types/cacheOptions'
 import ListenOptions from './types/listenOptions'
 import LoggerOptions from './types/loggerOptions'
 
-// TODO: Configure `knip` and address any findings.
+// TODO: Enable rules in `knip.json` and address any findings.
 
 const listenOptions: ListenOptions = {
   host: process.env.HOST || '0.0.0.0',
