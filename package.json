@@ -35,9 +35,10 @@
         "build:src": "tsc -p tsconfig.json",
         "build:spec": "node package-spec.js",
         "lint": "eslint . --ext .ts,.tsx",
+        "knip": "knip",
         "test": "jest --coverage --detectOpenHandles --verbose",
         "start": "node dist/index.js",
-        "all-the-things": "npm run clean && npm run build && npm run lint && npm run test"
+        "all-the-things": "npm run clean && npm run build && npm run lint && npm run knip && npm run test"
     },
     "engines": {
         "node": "22"
@@ -61,6 +62,7 @@
         "eslint-plugin-prefer-arrow": "^1.2.3",
         "eslint-plugin-tsdoc": "^0.3.0",
         "jest": "^29.7.0",
+        "knip": "^5.43.6",
         "prettier": "^3.3.3",
         "rimraf": "^6.0.1",
         "ts-jest": "^29.2.5",
