@@ -102,62 +102,122 @@ interface LocationResponse {
   isSuccessful: boolean
   message: string
   data: {
-    id: number
-    number: string
-    title: string
-    slug: string
-    phoneNumber: string
-    address: string
-    city: string
-    state: string
-    postalCode: string
-    latitude: number
-    longitude: number
-    onlineOrderUrl: string
-    ownerFriendlyName: string
-    ownerMessage: string
-    jobsApplyUrl: string
-    flavorOfTheDay: {
-      flavorId: number
-      menuItemId: number
-      onDate: string
-      title: string
-      urlSlug: string
-      image: {
-        useWhiteBackground: boolean
-        src: string
+    restaurant: {
+      getRestaurantDetails: {
+        country: string
+        name: string
+        olorestaurantid: number
+        restaurantId: string
+        restaurantNumber: string
+        onlineOrderUrl: string
+        ownerMessage: string
+        ownerFriendlyName: string
+        jobsApplyUrl: string
+        telephone: string
+        streetAddress: string
+        city: string
+        state: string
+        zip: string
+        latitude: number
+        longitude: number
+        labels: {
+          key: string
+          value: string
+        }[]
+        customerFacingMessage: string
+        urlSlug: string
+        timeZoneOffset: number
+        isTemporaryClosed: boolean
+        openDate: string
+        openTime: string
+        closeTime: string
+        isOpenNow: boolean
+        upcomingEvents: string[]
+        handoffOptions: string[]
+        flavors: {
+          flavorId: number
+          description: string
+          menuItemId: number
+          calendarDate: string
+          name: string
+          urlSlug: string
+          image: {
+            useWhiteBackground: boolean
+            imagePath: string
+          }
+        }[]
+        currentTimes: {
+          dineInTimes: {
+            opens: string
+            closes: string
+            dayOfWeek: string
+            day: string
+          }[]
+          driveThruTimes: {
+            opens: string
+            closes: string
+            dayOfWeek: string
+            day: string
+          }[]
+          curdSideTimes: {
+            opens: string
+            closes: string
+            dayOfWeek: string
+            day: string
+          }[]
+          deliveryTimes: {
+            opens: string
+            closes: string
+            dayOfWeek: string
+            day: string
+          }[]
+          lateNightDriveThruTimes: {
+            opens: string
+            closes: string
+            dayOfWeek: string
+            day: string
+          }[]
+        }
+        hoursTimeBlocks: {
+          dineInTimes: {
+            days: string
+            times: string
+          }[]
+          driveThruTimes: {
+            days: string
+            times: string
+          }[]
+          curdSideTimes: {
+            days: string
+            times: string
+          }[]
+          lateNightDriveThruTimes: {
+            days: string
+            times: string
+          }[]
+          deliveryTimes: {
+            days: string
+            times: string
+          }[]
+        }
+        temporalClosures: string[]
+        onlineOrderStatus: string
+        isDiningRoomClosed: boolean
+        isLobbyClosed: boolean
+        isDriveThruClosed: boolean
+        isCurdsideUnavailable: boolean
+        groupedHours: {
+          hoursByDestination: {
+            destination: string
+            hoursTimeBlocks: {
+              days: string
+              times: string
+            }[]
+          }[]
+        }
       }
-    }[]
-    upcomingEvents: string[]
-    currentTimes: {
-      dineInTimes: {
-        opens: string
-        closes: string
-        dayOfWeek: number
-        day: string
-      }[]
-      driveThruTimes: {
-        opens: string
-        closes: string
-        dayOfWeek: number
-        day: string
-      }[]
     }
-    hours: {
-      dineInTimes: {
-        days: string
-        times: string
-      }[]
-      driveThruTimes: {
-        days: string
-        times: string
-      }[]
-    }
-    timeZoneOffset: number
-    isTemporaryClosed: boolean
   }
-  isException: boolean
-  exceptionCorrelationId: string
 }
 
 /**
@@ -254,43 +314,133 @@ const getLocationScrape = async (logger: FastifyBaseLogger, locationID: number):
       const locationDetail: LocationDetail = {
         id: locationID,
         key: locationKey,
-        name: unescape(locationResponse.data.title),
+        name: unescape(locationResponse.data.restaurant.getRestaurantDetails.name),
         url: `${HTTPAddress.Website}/restaurants/${locationKey}`,
         address: {
-          street: unescape(locationResponse.data.address),
-          city: unescape(locationResponse.data.city),
-          state: unescape(locationResponse.data.state),
-          postal: Number(locationResponse.data.postalCode),
+          street: unescape(locationResponse.data.restaurant.getRestaurantDetails.streetAddress),
+          city: unescape(locationResponse.data.restaurant.getRestaurantDetails.city),
+          state: unescape(locationResponse.data.restaurant.getRestaurantDetails.state),
+          postal: Number(locationResponse.data.restaurant.getRestaurantDetails.zip),
           country: 'US'
         },
-        schedule: {
+        scheduleDineIn: {
           sunday: {
-            open: locationResponse.data.currentTimes.dineInTimes[0].opens,
-            close: locationResponse.data.currentTimes.dineInTimes[0].closes
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[0].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[0].closes
           },
           monday: {
-            open: locationResponse.data.currentTimes.dineInTimes[1].opens,
-            close: locationResponse.data.currentTimes.dineInTimes[1].closes
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[1].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[1].closes
           },
           tuesday: {
-            open: locationResponse.data.currentTimes.dineInTimes[2].opens,
-            close: locationResponse.data.currentTimes.dineInTimes[2].closes
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[2].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[2].closes
           },
           wednesday: {
-            open: locationResponse.data.currentTimes.dineInTimes[3].opens,
-            close: locationResponse.data.currentTimes.dineInTimes[3].closes
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[3].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[3].closes
           },
           thursday: {
-            open: locationResponse.data.currentTimes.dineInTimes[4].opens,
-            close: locationResponse.data.currentTimes.dineInTimes[4].closes
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[4].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[4].closes
           },
           friday: {
-            open: locationResponse.data.currentTimes.dineInTimes[5].opens,
-            close: locationResponse.data.currentTimes.dineInTimes[5].closes
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[5].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[5].closes
           },
           saturday: {
-            open: locationResponse.data.currentTimes.dineInTimes[6].opens,
-            close: locationResponse.data.currentTimes.dineInTimes[6].closes
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[6].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[6].closes
+          }
+        },
+        scheduleDriveThru: {
+          sunday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[0].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[0].closes
+          },
+          monday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[1].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[1].closes
+          },
+          tuesday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[2].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[2].closes
+          },
+          wednesday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[3].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[3].closes
+          },
+          thursday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[4].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[4].closes
+          },
+          friday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[5].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[5].closes
+          },
+          saturday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[6].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[6].closes
+          }
+        },
+        scheduleCurdSide: {
+          sunday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[0].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[0].closes
+          },
+          monday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[1].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[1].closes
+          },
+          tuesday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[2].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[2].closes
+          },
+          wednesday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[3].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[3].closes
+          },
+          thursday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[4].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[4].closes
+          },
+          friday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[5].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[5].closes
+          },
+          saturday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[6].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[6].closes
+          }
+        },
+        scheduleDelivery: {
+          sunday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[0].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[0].closes
+          },
+          monday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[1].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[1].closes
+          },
+          tuesday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[2].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[2].closes
+          },
+          wednesday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[3].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[3].closes
+          },
+          thursday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[4].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[4].closes
+          },
+          friday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[5].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[5].closes
+          },
+          saturday: {
+            open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[6].opens,
+            close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[6].closes
           }
         }
       }

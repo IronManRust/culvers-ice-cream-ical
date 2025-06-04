@@ -4,5 +4,8 @@ import Schedule from './schedule'
 
 export default interface LocationDetail extends LocationSummary {
   address: Address
-  schedule?: Schedule
+  scheduleDineIn?: Schedule
+  scheduleDriveThru?: Schedule
+  scheduleCurdSide?: Schedule
+  scheduleDelivery?: Schedule
 }

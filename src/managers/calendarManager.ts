@@ -231,8 +231,8 @@ export const getCalendarFeed = async (request: FastifyRequest): Promise<CachedAs
       description: `${calendarItem.flavor.description}\n\n${calendarItem.flavor.imageURL}\n\n${calendarItem.location.url}`,
       location: `${calendarItem.location.address.street}, ${calendarItem.location.address.city}, ${calendarItem.location.address.state} ${calendarItem.location.address.postal}, ${calendarItem.location.address.country}`,
       allDay: false,
-      start: buildCalendarDateOpen(date, calendarItem.location.schedule, timezone),
-      end: buildCalendarDateClose(date, calendarItem.location.schedule, timezone),
+      start: buildCalendarDateOpen(date, calendarItem.location.scheduleDineIn, timezone),
+      end: buildCalendarDateClose(date, calendarItem.location.scheduleDineIn, timezone),
       url: calendarItem.location.url,
       attachments: [calendarItem.flavor.imageURL],
       busystatus: ICalEventBusyStatus.FREE,
@@ -280,7 +280,7 @@ export const getCalendarRSS = async (request: FastifyRequest): Promise<CachedAss
       guid: getUUID(getCacheKeyCalendar(calendarItem.location.id, date.getFullYear(), date.getMonth() + 1, date.getDate())),
       title: `Culver's Flavor of the Day - ${calendarItem.flavor.name} (${calendarItem.location.address.city} - ${calendarItem.location.address.street})`,
       description: calendarItem.flavor.description,
-      date: buildCalendarDateOpen(date, calendarItem.location.schedule, timezone),
+      date: buildCalendarDateOpen(date, calendarItem.location.scheduleDineIn, timezone),
       url: calendarItem.location.url,
       categories
     })

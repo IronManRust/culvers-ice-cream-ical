@@ -70,7 +70,97 @@ const locationDetail: LocationDetail = {
     postal: 90210,
     country: 'US'
   },
-  schedule: {
+  scheduleDineIn: {
+    monday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    tuesday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    wednesday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    thursday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    friday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    saturday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    sunday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    }
+  },
+  scheduleDriveThru: {
+    monday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    tuesday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    wednesday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    thursday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    friday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    saturday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    sunday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    }
+  },
+  scheduleCurdSide: {
+    monday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    tuesday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    wednesday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    thursday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    friday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    saturday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    },
+    sunday: {
+      open: '9:00 AM',
+      close: '9:00 PM'
+    }
+  },
+  scheduleDelivery: {
     monday: {
       open: '9:00 AM',
       close: '9:00 PM'
