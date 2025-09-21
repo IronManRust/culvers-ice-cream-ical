@@ -323,7 +323,7 @@ const getLocationScrape = async (logger: FastifyBaseLogger, locationID: number):
           postal: Number(locationResponse.data.restaurant.getRestaurantDetails.zip),
           country: 'US'
         },
-        scheduleDineIn: {
+        scheduleDineIn: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes !== null ? {
           sunday: {
             open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[0].opens,
             close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[0].closes
@@ -352,8 +352,8 @@ const getLocationScrape = async (logger: FastifyBaseLogger, locationID: number):
             open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[6].opens,
             close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.dineInTimes[6].closes
           }
-        },
-        scheduleDriveThru: {
+        } : undefined,
+        scheduleDriveThru: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes !== null ? {
           sunday: {
             open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[0].opens,
             close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[0].closes
@@ -382,8 +382,8 @@ const getLocationScrape = async (logger: FastifyBaseLogger, locationID: number):
             open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[6].opens,
             close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.driveThruTimes[6].closes
           }
-        },
-        scheduleCurdSide: {
+        } : undefined,
+        scheduleCurdSide: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes !== null ? {
           sunday: {
             open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[0].opens,
             close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[0].closes
@@ -412,8 +412,8 @@ const getLocationScrape = async (logger: FastifyBaseLogger, locationID: number):
             open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[6].opens,
             close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.curdSideTimes[6].closes
           }
-        },
-        scheduleDelivery: {
+        } : undefined,
+        scheduleDelivery: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes !== null ? {
           sunday: {
             open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[0].opens,
             close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[0].closes
@@ -442,7 +442,7 @@ const getLocationScrape = async (logger: FastifyBaseLogger, locationID: number):
             open: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[6].opens,
             close: locationResponse.data.restaurant.getRestaurantDetails.currentTimes.deliveryTimes[6].closes
           }
-        }
+        } : undefined
       }
       logger.info('scrape store location - success')
       return locationDetail
